@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Recipe Bro — Authentic Regional Indian Recipes</title>
+
+  <!-- Android & iOS Mobile App (PWA) Meta Configuration -->
+  <meta name="application-name" content="Recipe Bro" />
+  <meta name="theme-color" content="#1B2432" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Recipe Bro" />
+  <meta name="description" content="Zero-login authentic Indian cooking companion for Android, iPhone, and Web. Scale 1 to 1,000 servings across Gas, Firewood, Electric & Air Fryer." />
+  <link id="dynamic-manifest" rel="manifest" href="" />
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8EE',
+            creamDark: '#F5ECDC',
+            navy: '#1B2432',
+            navyLight: '#2A3649',
+            saffron: '#F26419',
+            saffronDark: '#D9530E',
+            turmeric: '#F59E0B',
+            cardamom: '#15803D',
+          },
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #FDF8EE;
+      color: #1B2432;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      padding-bottom: env(safe-area-inset-bottom);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Native Mobile Safe Areas */
+    .safe-top { padding-top: env(safe-area-inset-top); }
+    .safe-bottom { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+    @keyframes popIn {
+      0% { transform: scale(0.5) translateY(15px); opacity: 0; }
+      70% { transform: scale(1.06) translateY(-2px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes whiskWiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
+    @keyframes spoonTilt {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      50% { transform: rotate(-8deg) translateY(-4px); }
+    }
+    @keyframes steamRise1 {
+      0% { transform: translateY(6px) scaleY(0.8); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-10px) scaleY(1.1); opacity: 0; }
+    }
+    @keyframes steamRise2 {
+      0% { transform: translateY(8px) scaleY(0.8); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-12px) scaleY(1.15); opacity: 0; }
+    }
+    @keyframes hatBounce {
+      0%, 100% { transform: translateY(0) rotate(-18deg); }
+      50% { transform: translateY(-5px) rotate(-14deg); }
+    }
+    @keyframes fadeOutSplash {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.04); pointer-events: none; }
+    }
+
+    .logo-ring-outer {
+      stroke-dasharray: 900;
+      stroke-dashoffset: 900;
+      animation: drawCircle 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .logo-ring-inner {
+      stroke-dasharray: 820;
+      stroke-dashoffset: 820;
+      animation: drawCircle 1.2s 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .logo-pop {
+      opacity: 0;
+      animation: popIn 0.7s 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .logo-pop-delay {
+      opacity: 0;
+      animation: popIn 0.7s 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .anim-whisk {
+      transform-origin: 185px 92px;
+      animation: whiskWiggle 1.6s 0.8s ease-in-out infinite;
+    }
+    .anim-spoon {
+      transform-origin: 138px 295px;
+      animation: spoonTilt 2s 0.9s ease-in-out infinite;
+    }
+    .anim-hat {
+      transform-origin: 175px 232px;
+      animation: hatBounce 1.8s 0.9s ease-in-out infinite;
+    }
+    .steam-1 { animation: steamRise1 1.8s infinite ease-in-out; }
+    .steam-2 { animation: steamRise2 2.1s 0.3s infinite ease-in-out; }
+    .steam-3 { animation: steamRise1 1.9s 0.6s infinite ease-in-out; }
+
+    .splash-exit {
+      animation: fadeOutSplash 0.6s ease-in-out forwards;
+    }
+
+    /* Custom Range Slider */
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      background: #F26419;
+      border: 3px solid #1B2432;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(27,36,50,0.25);
+      margin-top: -8px;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8px;
+      cursor: pointer;
+      background: #E5DAC3;
+      border-radius: 999px;
+    }
+
+    /* Smooth card transitions */
+    .card-hover {
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -8px rgba(27, 36, 50, 0.14);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #FDF8EE; }
+    ::-webkit-scrollbar-thumb { background: #D6C7AE; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #F26419; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-saffron selection:text-white">
+
+  <!-- ==================== 1. ANIMATED SPLASH SCREEN ==================== -->
+  <div id="splash-screen" class="fixed inset-0 z-50 bg-cream flex flex-col items-center justify-center p-6">
+    <div class="max-w-md w-full flex flex-col items-center text-center">
+      <!-- Bespoke Vector Recreation of the Recipe Bro Emblem -->
+      <svg viewBox="0 0 400 400" class="w-72 h-72 sm:w-80 sm:h-80 drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer Navy Arcs -->
+        <path class="logo-ring-outer" d="M 76 135 A 145 145 0 0 1 324 135" fill="none" stroke="#1B2432" stroke-width="7.5" stroke-linecap="round" />
+        <path class="logo-ring-outer" d="M 76 265 A 145 145 0 0 0 324 265" fill="none" stroke="#1B2432" stroke-width="7.5" stroke-linecap="round" />
+        <!-- Inner Saffron Orange Arcs -->
+        <path class="logo-ring-inner" d="M 94 142 A 126 126 0 0 1 306 142" fill="none" stroke="#F26419" stroke-width="6.5" stroke-linecap="round" />
+        <path class="logo-ring-inner" d="M 94 258 A 126 126 0 0 0 306 258" fill="none" stroke="#F26419" stroke-width="6.5" stroke-linecap="round" />
+
+        <!-- Top Whisk -->
+        <g class="logo-pop anim-whisk">
+          <!-- Handle -->
+          <rect x="135" y="96" width="52" height="12" rx="6" transform="rotate(-10 160 102)" fill="#F26419" />
+          <circle cx="143" cy="105" r="2.5" fill="#FDF8EE" />
+          <!-- Wire loops -->
+          <path d="M 186 96 C 215 78, 248 80, 249 91 C 250 102, 217 108, 186 98" fill="none" stroke="#1B2432" stroke-width="3.2" />
+          <path d="M 186 97 C 215 83, 248 85, 249 91 C 250 97, 217 103, 186 97" fill="none" stroke="#1B2432" stroke-width="2.6" />
+          <line x1="186" y1="97" x2="249" y2="91" stroke="#1B2432" stroke-width="2.5" />
+        </g>
+
+        <!-- RECIPE Main Bold Text -->
+        <g class="logo-pop">
+          <text x="200" y="206" text-anchor="middle" font-family="'Fredoka', sans-serif" font-weight="700" font-size="76" letter-spacing="2" fill="#1B2432" transform="rotate(-6 200 190)">RECIPE</text>
+        </g>
+
+        <!-- Left Wooden Spoon -->
+        <g class="logo-pop-delay anim-spoon">
+          <ellipse cx="122" cy="248" rx="9" ry="15" transform="rotate(-14 122 248)" fill="#F26419" />
+          <rect x="122" y="259" width="7" height="44" rx="3.5" transform="rotate(-14 125 280)" fill="#F26419" />
+        </g>
+
+        <!-- BRO Bold Text + Chef Hat on B -->
+        <g class="logo-pop-delay">
+          <text x="207" y="286" text-anchor="middle" font-family="'Fredoka', sans-serif" font-weight="700" font-size="72" letter-spacing="2" fill="#1B2432" transform="rotate(-6 205 270)">BRO</text>
+          <!-- Chef Hat perched on the B -->
+          <g class="anim-hat">
+            <path d="M 146 234 C 139 234, 136 224, 144 220 C 145 211, 159 210, 163 217 C 170 212, 181 218, 178 227 C 183 231, 179 238, 173 238 L 172 246 L 148 246 Z" fill="#FDF8EE" stroke="#1B2432" stroke-width="4" stroke-linejoin="round" />
+          </g>
+        </g>
+
+        <!-- Right Steaming Orange Pot -->
+        <g class="logo-pop-delay">
+          <!-- Steam Lines -->
+          <path class="steam-1" d="M 294 236 Q 290 229 294 222 Q 298 215 294 209" fill="none" stroke="#1B2432" stroke-width="3" stroke-linecap="round" />
+          <path class="steam-2" d="M 304 234 Q 300 227 304 220 Q 308 213 304 207" fill="none" stroke="#1B2432" stroke-width="3" stroke-linecap="round" />
+          <path class="steam-3" d="M 314 236 Q 310 229 314 222 Q 318 215 314 209" fill="none" stroke="#1B2432" stroke-width="3" stroke-linecap="round" />
+          <!-- Pot Handles -->
+          <path d="M 278 256 L 272 256" stroke="#1B2432" stroke-width="4.5" stroke-linecap="round" />
+          <path d="M 330 256 L 336 256" stroke="#1B2432" stroke-width="4.5" stroke-linecap="round" />
+          <!-- Pot Body -->
+          <path d="M 280 250 L 328 250 L 325 273 C 324 278, 319 281, 313 281 L 295 281 C 289 281, 284 278, 283 273 Z" fill="#F26419" stroke="#1B2432" stroke-width="4" stroke-linejoin="round" />
+          <!-- Pot Rim -->
+          <ellipse cx="304" cy="249" rx="25" ry="5" fill="#F59E0B" stroke="#1B2432" stroke-width="3.5" />
+        </g>
+      </svg>
+
+      <p class="mt-2 text-navy/80 font-semibold text-base sm:text-lg tracking-wide animate-pulse">
+        Authentic Indian Kitchen Companion • No Login Needed
+      </p>
+
+      <div class="mt-6 flex items-center gap-3">
+        <div class="w-44 h-2 bg-creamDark rounded-full overflow-hidden border border-navy/10">
+          <div id="splash-progress" class="h-full bg-saffron rounded-full transition-all duration-100" style="width: 0%"></div>
+        </div>
+        <button onclick="dismissSplash()" class="text-xs font-bold uppercase tracking-wider text-navy/60 hover:text-saffron px-3 py-1.5 rounded-full border border-navy/15 bg-white/70 transition">
+          Enter Kitchen →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="sticky top-0 z-30 bg-cream/95 backdrop-blur-md border-b border-navy/10 safe-top">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Button -->
+      <button onclick="goHome()" class="flex items-center gap-2.5 group focus:outline-none">
+        <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center border-2 border-saffron shadow-sm group-hover:scale-105 transition">
+          <span class="font-display text-saffron text-lg font-bold">RB</span>
+        </div>
+        <div class="text-left">
+          <span class="font-display text-xl sm:text-2xl text-navy tracking-tight block leading-none">RECIPE <span class="text-saffron">BRO</span></span>
+          <span class="text-[11px] font-semibold text-navy/60 tracking-wider uppercase">Android • iPhone • Web</span>
+        </div>
+      </button>
+
+      <!-- Breadcrumb / Quick Actions -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="openInstallModal()" class="inline-flex items-center gap-1.5 text-xs font-extrabold bg-navy text-turmeric hover:bg-saffron hover:text-white px-3 py-2 rounded-xl shadow-sm transition">
+          <span>📲</span>
+          <span class="hidden sm:inline">Get Mobile App</span>
+          <span class="sm:hidden">App</span>
+        </button>
+        <button onclick="openMode1()" class="hidden md:inline-flex text-xs sm:text-sm font-bold px-3 py-2 rounded-xl bg-white border border-navy/15 text-navy hover:border-saffron hover:text-saffron transition">
+          🔍 Search Dish
+        </button>
+        <button onclick="openMode2()" class="hidden md:inline-flex text-xs sm:text-sm font-bold px-3 py-2 rounded-xl bg-saffron text-white hover:bg-saffronDark shadow-sm transition">
+          🧺 Home Pantry
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10 pb-24 md:pb-12">
+    <section id="view-home" class="space-y-10">
+      <!-- Hero Popup Card with the 2 Core Boxes -->
+      <div class="bg-white rounded-3xl border-2 border-navy/10 shadow-xl p-6 sm:p-10 relative overflow-hidden">
+        <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-saffron/10 pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-turmeric/10 pointer-events-none"></div>
+
+        <div class="relative text-center max-w-2xl mx-auto mb-8">
+          <span class="inline-block px-3.5 py-1 rounded-full bg-saffron/15 text-saffron font-bold text-xs uppercase tracking-widest mb-3">
+            Namaste Chef! How are we cooking today?
+          </span>
+          <h1 class="font-display text-3xl sm:text-5xl text-navy leading-tight">
+            Cook Authentic Indian Food <span class="text-saffron">Like a Master</span>
+          </h1>
+          <p class="mt-3 text-navy/70 text-sm sm:text-base">
+            Scale recipes from <strong>1 to 1,000 people</strong>, adapt heat for Gas, Firewood Chulha, Electric, or Air Fryer, and follow step-by-step flame & mixing secrets.
+          </p>
+        </div>
+
+        <!-- THE 2 MAIN BOXES -->
+        <div class="relative grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <!-- BOX 1: Cook with Dish Name -->
+          <button onclick="openMode1()" class="card-hover text-left group bg-gradient-to-br from-cream to-white border-2 border-navy/15 hover:border-saffron rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-md focus:outline-none">
+            <div>
+              <div class="w-16 h-16 rounded-2xl bg-saffron text-white flex items-center justify-center text-3xl shadow-md mb-5 group-hover:scale-110 transition">
+                🍲
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-saffron">Option 01</span>
+                <span class="text-xs font-bold text-navy/50 bg-navy/5 px-2.5 py-1 rounded-full">Regional State Styles</span>
+              </div>
+              <h2 class="font-display text-2xl sm:text-3xl text-navy mt-2 group-hover:text-saffron transition">
+                Cook with Dish Name
+              </h2>
+              <p class="mt-2 text-navy/70 text-sm leading-relaxed">
+                Search any Indian dish, pick your authentic state style (Andhra, Telangana, Kerala, Hyderabadi, Punjabi & more), set 1–1,000 servings, and get exact flame & mixing mastery.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-navy/10 flex items-center justify-between text-saffron font-bold text-sm">
+              <span>Search & Select Dish</span>
+              <span class="w-8 h-8 rounded-full bg-saffron/10 flex items-center justify-center group-hover:bg-saffron group-hover:text-white transition">→</span>
+            </div>
+          </button>
+
+          <!-- BOX 2: Cook with Ingredients Present at Home -->
+          <button onclick="openMode2()" class="card-hover text-left group bg-gradient-to-br from-cream to-white border-2 border-navy/15 hover:border-cardamom rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-md focus:outline-none">
+            <div>
+              <div class="w-16 h-16 rounded-2xl bg-navy text-turmeric flex items-center justify-center text-3xl shadow-md mb-5 group-hover:scale-110 transition">
+                🧺
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-cardamom">Option 02</span>
+                <span class="text-xs font-bold text-navy/50 bg-navy/5 px-2.5 py-1 rounded-full">Smart Kitchen Matcher</span>
+              </div>
+              <h2 class="font-display text-2xl sm:text-3xl text-navy mt-2 group-hover:text-cardamom transition">
+                Cook with Ingredients Present at Home
+              </h2>
+              <p class="mt-2 text-navy/70 text-sm leading-relaxed">
+                Type whatever ingredients you have in your kitchen right now (separated by commas) and discover delicious Indian dishes you can cook immediately with full step-by-step details.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-navy/10 flex items-center justify-between text-cardamom font-bold text-sm">
+              <span>Enter Home Ingredients</span>
+              <span class="w-8 h-8 rounded-full bg-cardamom/10 flex items-center justify-center group-hover:bg-cardamom group-hover:text-white transition">→</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Community Top-Rated Dishes Showcase -->
+      <div>
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-5 gap-2">
+          <div>
+            <h3 class="font-display text-2xl text-navy">Community Favorites & Live Taste Ratings</h3>
+            <p class="text-sm text-navy/65">Rated by fellow home chefs on Recipe Bro — click any dish to jump right in</p>
+          </div>
+          <span class="text-xs font-bold text-navy/60 bg-white px-3 py-1.5 rounded-full border border-navy/10 self-start">
+            ⭐ Real-time Community Scores
+          </span>
+        </div>
+        <div id="trending-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 1: COOK WITH DISH NAME (SEARCH & CHECKLIST DROPDOWN) ==================== -->
+    <section id="view-mode1" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="goHome()" class="inline-flex items-center gap-2 text-sm font-bold text-navy/70 hover:text-saffron bg-white px-4 py-2 rounded-xl border border-navy/10 transition">
+          ← Back to Home
+        </button>
+        <span class="text-xs font-bold uppercase tracking-wider text-saffron bg-saffron/10 px-3 py-1.5 rounded-full">
+          Step 1 of 4 • Find Your Dish
+        </span>
+      </div>
+
+      <div class="bg-white rounded-3xl border-2 border-navy/10 shadow-xl p-6 sm:p-8 max-w-3xl mx-auto">
+        <h2 class="font-display text-2xl sm:text-3xl text-navy mb-2">Search Name of Dish</h2>
+        <p class="text-sm text-navy/65 mb-5">Type a dish name below. Select from the live checklist dropdown or generate any custom regional Indian dish!</p>
+
+        <!-- Search Input Box -->
+        <div class="relative">
+          <div class="flex items-center bg-cream border-2 border-navy/20 focus-within:border-saffron rounded-2xl px-4 py-3.5 shadow-inner transition">
+            <span class="text-xl mr-3">🔍</span>
+            <input
+              id="dish-search-input"
+              type="text"
+              autocomplete="off"
+              placeholder="Type dish name (e.g., Biryani, Paneer, Dosa, Fish Curry, Sambar, Gongura...)"
+              oninput="handleDishSearch(this.value)"
+              onfocus="handleDishSearch(this.value)"
+              class="w-full bg-transparent text-navy font-semibold placeholder:text-navy/40 focus:outline-none text-base sm:text-lg"
+            />
+            <button id="clear-search-btn" onclick="clearDishSearch()" class="hidden text-xs font-bold text-navy/50 hover:text-saffron px-2 py-1">
+              ✕ Clear
+            </button>
+          </div>
+
+          <!-- Checklist Dropdown of Matching Dishes -->
+          <div id="dish-checklist-dropdown" class="mt-3 bg-white border-2 border-navy/15 rounded-2xl shadow-lg overflow-hidden divide-y divide-navy/10 max-h-96 overflow-y-auto">
+            <!-- Populated dynamically with checkboxes -->
+          </div>
+        </div>
+
+        <!-- Quick Category Filter Chips -->
+        <div class="mt-6">
+          <p class="text-xs font-bold uppercase tracking-wider text-navy/50 mb-2.5">Popular Categories:</p>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="quickFilterCategory('All')" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-navy text-white hover:bg-saffron transition">All Dishes (16)</button>
+            <button onclick="quickFilterCategory('Rice & Biryani')" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-creamDark text-navy hover:bg-saffron hover:text-white transition">🍚 Rice & Biryani</button>
+            <button onclick="quickFilterCategory('Curries & Gravies')" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-creamDark text-navy hover:bg-saffron hover:text-white transition">🍛 Curries & Gravies</button>
+            <button onclick="quickFilterCategory('Breakfast & Tiffins')" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-creamDark text-navy hover:bg-saffron hover:text-white transition">🥞 Breakfast & Tiffins</button>
+            <button onclick="quickFilterCategory('Starters & Chutneys')" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-creamDark text-navy hover:bg-saffron hover:text-white transition">🌶️ Starters & Chutneys</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: COOK WITH INGREDIENTS AT HOME ==================== -->
+    <section id="view-mode2" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="goHome()" class="inline-flex items-center gap-2 text-sm font-bold text-navy/70 hover:text-saffron bg-white px-4 py-2 rounded-xl border border-navy/10 transition">
+          ← Back to Home
+        </button>
+        <span class="text-xs font-bold uppercase tracking-wider text-cardamom bg-cardamom/10 px-3 py-1.5 rounded-full">
+          Smart Kitchen Pantry Mode
+        </span>
+      </div>
+
+      <div class="bg-white rounded-3xl border-2 border-navy/10 shadow-xl p-6 sm:p-8 max-w-3xl mx-auto">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-2xl bg-navy text-turmeric flex items-center justify-center text-2xl">🧺</div>
+          <div>
+            <h2 class="font-display text-2xl sm:text-3xl text-navy">What's in Your Kitchen?</h2>
+            <p class="text-xs sm:text-sm text-navy/65">Type ingredients present at home separated by commas (,)</p>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <label for="home-ingredients-input" class="block text-xs font-bold uppercase tracking-wider text-navy/60 mb-2">
+            Enter Ingredients (Comma Separated):
+          </label>
+          <textarea
+            id="home-ingredients-input"
+            rows="3"
+            placeholder="e.g., rice, tomatoes, onions, green chilies, turmeric, mustard seeds, curry leaves, garlic"
+            class="w-full bg-cream border-2 border-navy/20 focus:border-cardamom rounded-2xl p-4 text-navy font-semibold placeholder:text-navy/40 focus:outline-none text-base"
+          ></textarea>
+        </div>
+
+        <!-- Quick Tap Pantry Chips -->
+        <div class="mt-4">
+          <p class="text-xs font-bold text-navy/50 mb-2">Tap to add common home ingredients:</p>
+          <div id="pantry-chips" class="flex flex-wrap gap-2">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Let's Cook Action Button -->
+        <div class="mt-6">
+          <button onclick="findDishesFromPantry()" class="w-full py-4 rounded-2xl bg-saffron hover:bg-saffronDark text-white font-display text-xl tracking-wide shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+            <span>🔥 Let's Cook with These Ingredients</span>
+          </button>
+        </div>
+
+        <!-- Matched / AI Generated Dishes Results -->
+        <div id="pantry-results-container" class="hidden mt-8 pt-6 border-t-2 border-navy/10 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-display text-xl text-navy">Dishes You Can Prepare Right Now:</h3>
+            <span id="pantry-match-badge" class="text-xs font-bold bg-cardamom/15 text-cardamom px-3 py-1 rounded-full"></span>
+          </div>
+          <div id="pantry-results-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: REGIONAL STATE STYLES POPUP/SELECTION ==================== -->
+    <section id="view-styles" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="backFromStyles()" class="inline-flex items-center gap-2 text-sm font-bold text-navy/70 hover:text-saffron bg-white px-4 py-2 rounded-xl border border-navy/10 transition">
+          ← Change Dish
+        </button>
+        <span class="text-xs font-bold uppercase tracking-wider text-saffron bg-saffron/10 px-3 py-1.5 rounded-full">
+          Step 2 of 4 • Choose State Style
+        </span>
+      </div>
+
+      <div class="bg-white rounded-3xl border-2 border-navy/10 shadow-xl p-6 sm:p-8 max-w-4xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 pb-6 border-b border-navy/10">
+          <img id="style-dish-img" src="" alt="Dish" class="w-24 h-24 rounded-2xl object-cover border-2 border-saffron/30 shadow-sm" />
+          <div>
+            <span id="style-dish-cat" class="text-xs font-extrabold uppercase tracking-wider text-saffron"></span>
+            <h2 id="style-dish-title" class="font-display text-3xl sm:text-4xl text-navy"></h2>
+            <p class="text-sm text-navy/70 mt-1">
+              Every Indian state has its own unique spice blend, tempering, and aroma. Select your preferred regional style:
+            </p>
+          </div>
+        </div>
+
+        <div id="state-styles-grid" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- State Style Cards Populated via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 4: PEOPLE QUANTITY (1-1000) & STOVE / APPLIANCE SELECTION ==================== -->
+    <section id="view-setup" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="showSection('view-styles')" class="inline-flex items-center gap-2 text-sm font-bold text-navy/70 hover:text-saffron bg-white px-4 py-2 rounded-xl border border-navy/10 transition">
+          ← Change State Style
+        </button>
+        <span class="text-xs font-bold uppercase tracking-wider text-saffron bg-saffron/10 px-3 py-1.5 rounded-full">
+          Step 3 of 4 • Servings & Stove
+        </span>
+      </div>
+
+      <div class="bg-white rounded-3xl border-2 border-navy/10 shadow-xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8">
+        <!-- Selected Dish + Style Banner -->
+        <div class="bg-cream rounded-2xl p-4 border border-navy/10 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-bold uppercase text-navy/50">Selected Recipe</p>
+            <h2 class="font-display text-2xl text-navy">
+              <span id="setup-dish-name"></span> — <span id="setup-style-name" class="text-saffron"></span>
+            </h2>
+          </div>
+          <span id="setup-spice-badge" class="px-3 py-1 rounded-full bg-white text-xs font-bold text-navy border border-navy/10"></span>
+        </div>
+
+        <!-- PART A: Quantity of People (1 to 1,000) -->
+        <div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <div>
+              <h3 class="font-display text-xl sm:text-2xl text-navy">1. Quantity of People (1 – 1,000)</h3>
+              <p class="text-xs sm:text-sm text-navy/65">All ingredient weights & vessel tips automatically scale for your crowd size.</p>
+            </div>
+            <div class="flex items-center gap-2 bg-cream px-3 py-2 rounded-2xl border-2 border-saffron">
+              <span class="text-lg">👥</span>
+              <input
+                id="people-number-input"
+                type="number"
+                min="1"
+                max="1000"
+                value="4"
+                oninput="updatePeopleCount(this.value)"
+                class="w-20 bg-transparent font-display text-2xl text-navy text-center focus:outline-none"
+              />
+              <span class="text-xs font-bold text-navy/60">People</span>
+            </div>
+          </div>
+
+          <!-- Slider -->
+          <input
+            id="people-slider"
+            type="range"
+            min="1"
+            max="1000"
+            value="4"
+            oninput="updatePeopleCount(this.value)"
+            class="w-full my-3"
+          />
+
+          <!-- Quick Crowd Presets -->
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button onclick="updatePeopleCount(1)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-creamDark hover:bg-saffron hover:text-white transition">1 Person (Solo)</button>
+            <button onclick="updatePeopleCount(2)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-creamDark hover:bg-saffron hover:text-white transition">2 People</button>
+            <button onclick="updatePeopleCount(4)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-creamDark hover:bg-saffron hover:text-white transition">4 (Family)</button>
+            <button onclick="updatePeopleCount(10)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-creamDark hover:bg-saffron hover:text-white transition">10 (House Party)</button>
+            <button onclick="updatePeopleCount(50)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-creamDark hover:bg-saffron hover:text-white transition">50 (Function)</button>
+            <button onclick="updatePeopleCount(100)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-creamDark hover:bg-saffron hover:text-white transition">100 (Catering)</button>
+            <button onclick="updatePeopleCount(500)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-creamDark hover:bg-saffron hover:text-white transition">500 (Grand Event)</button>
+            <button onclick="updatePeopleCount(1000)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-creamDark hover:bg-saffron hover:text-white transition">1,000 (Mega Feast)</button>
+          </div>
+          <p id="crowd-advice-note" class="mt-2.5 text-xs font-semibold text-cardamom bg-cardamom/10 px-3 py-2 rounded-xl">
+            🏠 Home Batch (4 People): Standard 3–4 Liter heavy-bottomed kadhai or pressure cooker recommended.
+          </p>
+        </div>
+
+        <!-- PART B: Cooking Appliance / Stove Selection -->
+        <div>
+          <h3 class="font-display text-xl sm:text-2xl text-navy mb-1">2. What Are You Cooking On?</h3>
+          <p class="text-xs sm:text-sm text-navy/65 mb-4">We tailor exact temperatures, ember/flame adjustments, and timing to your heat source.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5" id="stove-cards-grid">
+            <button onclick="selectStove('Gas Stove')" data-stove="Gas Stove" class="stove-card text-left p-4 rounded-2xl border-2 border-saffron bg-saffron/10 transition">
+              <div class="text-3xl mb-2">🔥</div>
+              <h4 class="font-display text-lg text-navy">Gas Stove</h4>
+              <p class="text-xs text-navy/70 mt-1">Instant high/medium/simmer flame control</p>
+            </button>
+
+            <button onclick="selectStove('Wood-Burning / Firewood Stove')" data-stove="Wood-Burning / Firewood Stove" class="stove-card text-left p-4 rounded-2xl border-2 border-navy/15 bg-cream hover:border-saffron transition">
+              <div class="text-3xl mb-2">🪵</div>
+              <h4 class="font-display text-lg text-navy">Firewood Stove</h4>
+              <p class="text-xs text-navy/70 mt-1">Traditional Chulha smoky heat & coal embers</p>
+            </button>
+
+            <button onclick="selectStove('Electric / Induction Stove')" data-stove="Electric / Induction Stove" class="stove-card text-left p-4 rounded-2xl border-2 border-navy/15 bg-cream hover:border-saffron transition">
+              <div class="text-3xl mb-2">⚡</div>
+              <h4 class="font-display text-lg text-navy">Electric Stove</h4>
+              <p class="text-xs text-navy/70 mt-1">Precise wattage / °C coil & induction heat</p>
+            </button>
+
+            <button onclick="selectStove('Air Fryer')" data-stove="Air Fryer" class="stove-card text-left p-4 rounded-2xl border-2 border-navy/15 bg-cream hover:border-saffron transition">
+              <div class="text-3xl mb-2">🌪️</div>
+              <h4 class="font-display text-lg text-navy">Air Fryer</h4>
+              <p class="text-xs text-navy/70 mt-1">Convection hot air roasting & low-oil crisp</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Continue to Scaled Ingredients Button -->
+        <button onclick="proceedToIngredients()" class="w-full py-4 rounded-2xl bg-navy hover:bg-saffron text-white font-display text-xl tracking-wide shadow-lg transition flex items-center justify-center gap-2">
+          <span>View Scaled Ingredients & Dish Preview →</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 5: DISH SAMPLE IMAGE & SCALED INGREDIENTS ==================== -->
+    <section id="view-ingredients" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="showSection('view-setup')" class="inline-flex items-center gap-2 text-sm font-bold text-navy/70 hover:text-saffron bg-white px-4 py-2 rounded-xl border border-navy/10 transition">
+          ← Edit People / Stove
+        </button>
+        <span class="text-xs font-bold uppercase tracking-wider text-saffron bg-saffron/10 px-3 py-1.5 rounded-full">
+          Step 4 of 4 • Scaled Ingredients
+        </span>
+      </div>
+
+      <div class="bg-white rounded-3xl border-2 border-navy/10 shadow-xl overflow-hidden max-w-4xl mx-auto">
+        <!-- Sample Dish Header Image & Metadata -->
+        <div class="relative h-64 sm:h-80 w-full bg-navy">
+          <img id="ing-dish-image" src="" alt="Sample Dish" class="w-full h-full object-cover opacity-90" />
+          <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent"></div>
+          <div class="absolute bottom-0 inset-x-0 p-6 sm:p-8 text-white">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span id="ing-style-badge" class="px-3 py-1 rounded-full bg-saffron text-white text-xs font-extrabold uppercase tracking-wider"></span>
+              <span id="ing-stove-badge" class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold"></span>
+              <span id="ing-rating-badge" class="px-3 py-1 rounded-full bg-turmeric text-navy text-xs font-extrabold"></span>
+            </div>
+            <h2 id="ing-dish-title" class="font-display text-3xl sm:text-4xl"></h2>
+            <p id="ing-dish-desc" class="text-white/85 text-xs sm:text-sm mt-1 max-w-2xl"></p>
+          </div>
+        </div>
+
+        <!-- Scaled Quantity Summary Bar -->
+        <div class="bg-cream px-6 py-4 border-b border-navy/10 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-6">
+            <div>
+              <span class="text-[11px] font-bold uppercase text-navy/50 block">Scaled For</span>
+              <span id="ing-people-count" class="font-display text-xl text-saffron"></span>
+            </div>
+            <div class="h-8 w-px bg-navy/15"></div>
+            <div>
+              <span class="text-[11px] font-bold uppercase text-navy/50 block">Est. Cook Time</span>
+              <span id="ing-cook-time" class="font-display text-xl text-navy"></span>
+            </div>
+          </div>
+          <span class="text-xs font-semibold text-navy/70">
+            ✅ Tap each ingredient as you gather it
+          </span>
+        </div>
+
+        <!-- Ingredients Grid with Reference Photos -->
+        <div class="p-6 sm:p-8">
+          <h3 class="font-display text-2xl text-navy mb-4">Required Ingredients (Exact Scaled Quantities)</h3>
+          <div id="scaled-ingredients-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- Populated dynamically with ingredient thumbnail photo, name, and scaled quantity -->
+          </div>
+
+          <!-- Prominent LET'S COOK Button at Bottom -->
+          <div class="mt-8 pt-6 border-t-2 border-navy/10">
+            <button onclick="startCookingMode()" class="w-full py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-saffron to-saffronDark hover:from-navy hover:to-navyLight text-white font-display text-2xl tracking-wide shadow-xl hover:shadow-2xl transition transform hover:-translate-y-0.5 flex items-center justify-center gap-3">
+              <span>👨‍🍳 Let's Cook! Start Step-by-Step Guide</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 6: ULTRA-DETAILED STEP-BY-STEP COOKING MODE ==================== -->
+    <section id="view-cooking" class="hidden space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <button onclick="showSection('view-ingredients')" class="inline-flex items-center gap-2 text-sm font-bold text-navy/70 hover:text-saffron bg-white px-4 py-2 rounded-xl border border-navy/10 transition">
+          ← Back to Ingredients
+        </button>
+        <div class="flex items-center gap-2">
+          <span id="cook-stove-pill" class="text-xs font-bold bg-navy text-white px-3 py-1.5 rounded-full"></span>
+          <span id="cook-people-pill" class="text-xs font-bold bg-saffron/15 text-saffron px-3 py-1.5 rounded-full"></span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl border-2 border-navy/10 shadow-xl p-6 sm:p-8 max-w-4xl mx-auto">
+        <!-- Header & Step Progress -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-navy/10">
+          <div>
+            <span class="text-xs font-extrabold uppercase tracking-wider text-saffron">Master Chef Step-by-Step Mode</span>
+            <h2 id="cook-header-title" class="font-display text-2xl sm:text-3xl text-navy"></h2>
+          </div>
+          <div class="text-right">
+            <span id="step-counter-label" class="font-display text-xl text-navy">Step 1 of 6</span>
+            <div class="w-40 h-2.5 bg-creamDark rounded-full overflow-hidden mt-1">
+              <div id="step-progress-bar" class="h-full bg-cardamom rounded-full transition-all duration-300" style="width: 20%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step Navigation Pills -->
+        <div id="step-pills-row" class="flex gap-2 overflow-x-auto py-4">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Active Step Detailed Card -->
+        <div id="active-step-card" class="mt-2 bg-cream rounded-3xl border-2 border-navy/10 p-5 sm:p-7 space-y-5">
+          <!-- Step Title & Built-in Timer -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <h3 id="step-title" class="font-display text-2xl sm:text-3xl text-navy"></h3>
+            <button id="step-timer-btn" onclick="toggleStepTimer()" class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-navy text-white font-bold text-sm hover:bg-saffron transition self-start">
+              <span>⏱️</span>
+              <span id="step-timer-text">Start Timer (5:00)</span>
+            </button>
+          </div>
+
+          <!-- Temperature / Flame & Heat Adjustment Badges -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <!-- Exact Temperature / Flame Level -->
+            <div class="bg-white rounded-2xl p-4 border-l-4 border-saffron shadow-sm">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-saffron block mb-1">
+                🌡️ Exact Heat & Stove Setting
+              </span>
+              <p id="step-temp-detail" class="text-sm font-bold text-navy leading-snug"></p>
+            </div>
+
+            <!-- When to Increase or Decrease Heat -->
+            <div class="bg-white rounded-2xl p-4 border-l-4 border-turmeric shadow-sm">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 block mb-1">
+                🔺🔻 Flame Increase / Decrease Cue
+              </span>
+              <p id="step-heat-shift" class="text-sm font-bold text-navy leading-snug"></p>
+            </div>
+          </div>
+
+          <!-- Ingredients Added in This Step -->
+          <div id="step-ingredients-box" class="bg-white/80 rounded-2xl p-4 border border-navy/10">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-navy/60 block mb-2">
+              🥣 Ingredients Added in This Step (Scaled):
+            </span>
+            <div id="step-ingredients-tags" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <!-- Core Cooking Process & Micro-Detailing -->
+          <div class="space-y-3">
+            <h4 class="font-display text-lg text-navy">📝 Exact Cooking Process:</h4>
+            <p id="step-instruction" class="text-navy/90 text-sm sm:text-base leading-relaxed"></p>
+          </div>
+
+          <!-- How to Mix & Stir Technique -->
+          <div class="bg-white rounded-2xl p-4 border border-cardamom/30 flex items-start gap-3">
+            <span class="text-2xl">🥄</span>
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-wider text-cardamom block">
+                How to Mix & Stir After Adding Ingredients
+              </span>
+              <p id="step-mixing-detail" class="text-sm font-semibold text-navy/85 mt-0.5 leading-relaxed"></p>
+            </div>
+          </div>
+
+          <!-- Sensory Perfection Cue -->
+          <div class="bg-navy text-white rounded-2xl p-4 flex items-start gap-3">
+            <span class="text-2xl">✨</span>
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-wider text-turmeric block">
+                Taste Secret & Sensory Check (When to Move On)
+              </span>
+              <p id="step-sensory-cue" class="text-xs sm:text-sm text-white/90 mt-0.5 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Prev / Next / Let's Serve Controls -->
+        <div class="mt-6 flex items-center justify-between gap-4">
+          <button id="prev-step-btn" onclick="changeStep(-1)" class="px-5 py-3.5 rounded-2xl bg-creamDark hover:bg-navy hover:text-white text-navy font-bold text-sm transition disabled:opacity-40">
+            ← Previous Step
+          </button>
+
+          <button id="next-step-btn" onclick="changeStep(1)" class="flex-1 sm:flex-initial px-8 py-3.5 rounded-2xl bg-saffron hover:bg-saffronDark text-white font-display text-lg shadow-md transition">
+            Next Step →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 7: LET'S SERVE & TASTE RATING ==================== -->
+    <section id="view-serve" class="hidden space-y-6">
+      <div class="bg-white rounded-3xl border-2 border-navy/10 shadow-2xl overflow-hidden max-w-3xl mx-auto">
+        <!-- Celebratory Banner -->
+        <div class="bg-gradient-to-r from-navy via-navyLight to-navy p-8 text-center text-white relative overflow-hidden">
+          <div class="text-5xl mb-3">🍽️🎉</div>
+          <span class="inline-block px-3.5 py-1 rounded-full bg-saffron text-white text-xs font-extrabold uppercase tracking-widest mb-2">
+            Dish Completed!
+          </span>
+          <h2 class="font-display text-3xl sm:text-4xl">Let's Serve!</h2>
+          <p id="serve-dish-subtitle" class="text-white/80 text-sm sm:text-base mt-1"></p>
+        </div>
+
+        <div class="p-6 sm:p-8 space-y-8">
+          <!-- Plating & Serving Suggestions -->
+          <div class="bg-cream rounded-2xl p-5 border border-navy/10">
+            <h3 class="font-display text-xl text-navy mb-2">🌿 Master Plating & Serving Guide</h3>
+            <p id="serve-plating-tips" class="text-sm text-navy/85 leading-relaxed"></p>
+          </div>
+
+          <!-- Rate Me the Taste Widget -->
+          <div class="bg-gradient-to-br from-cream to-white rounded-3xl border-2 border-saffron/40 p-6 text-center space-y-4">
+            <h3 class="font-display text-2xl text-navy">⭐ Rate Me the Taste!</h3>
+            <p class="text-xs sm:text-sm text-navy/70 max-w-md mx-auto">
+              Your taste rating is shared live on Recipe Bro to help fellow food lovers pick the best regional styles!
+            </p>
+
+            <!-- Star Selector -->
+            <div id="rating-stars" class="flex items-center justify-center gap-2 text-4xl">
+              <button onclick="setUserRating(1)" class="star-btn hover:scale-125 transition text-turmeric">★</button>
+              <button onclick="setUserRating(2)" class="star-btn hover:scale-125 transition text-turmeric">★</button>
+              <button onclick="setUserRating(3)" class="star-btn hover:scale-125 transition text-turmeric">★</button>
+              <button onclick="setUserRating(4)" class="star-btn hover:scale-125 transition text-turmeric">★</button>
+              <button onclick="setUserRating(5)" class="star-btn hover:scale-125 transition text-turmeric">★</button>
+            </div>
+            <p id="rating-label" class="text-sm font-extrabold text-saffron">5.0 / 5 — Restaurant Perfection!</p>
+
+            <!-- Quick Taste Tags -->
+            <div class="flex flex-wrap justify-center gap-2 pt-1" id="taste-tags-row">
+              <button onclick="toggleTasteTag(this)" class="taste-tag px-3 py-1.5 rounded-full text-xs font-bold border border-navy/15 bg-white text-navy hover:border-saffron transition">🔥 Authentic Spice</button>
+              <button onclick="toggleTasteTag(this)" class="taste-tag px-3 py-1.5 rounded-full text-xs font-bold border border-navy/15 bg-white text-navy hover:border-saffron transition">👑 Crowd Pleaser</button>
+              <button onclick="toggleTasteTag(this)" class="taste-tag px-3 py-1.5 rounded-full text-xs font-bold border border-navy/15 bg-white text-navy hover:border-saffron transition">😋 Restaurant Quality</button>
+              <button onclick="toggleTasteTag(this)" class="taste-tag px-3 py-1.5 rounded-full text-xs font-bold border border-navy/15 bg-white text-navy hover:border-saffron transition">👌 Spot-On Heat Guide</button>
+            </div>
+
+            <!-- Optional Review Comment -->
+            <input
+              id="rating-comment"
+              type="text"
+              placeholder="Optional note for other cooks (e.g., 'Turned out super aromatic for 20 guests!')"
+              class="w-full max-w-lg mx-auto bg-white border border-navy/20 rounded-xl px-4 py-2.5 text-sm text-navy focus:outline-none focus:border-saffron"
+            />
+
+            <div class="pt-2">
+              <button id="submit-rating-btn" onclick="submitTasteRating()" class="px-8 py-3.5 rounded-2xl bg-saffron hover:bg-saffronDark text-white font-display text-lg shadow-md transition">
+                Submit Taste Rating & Share
+              </button>
+            </div>
+
+            <!-- Recent Community Reviews for This Dish -->
+            <div id="dish-reviews-feed" class="mt-6 pt-5 border-t border-navy/10 text-left space-y-2.5">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <button onclick="goHome()" class="px-6 py-3 rounded-2xl bg-navy text-white font-bold text-sm hover:bg-saffron transition">
+              🏠 Cook Another Dish
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Banner (Replaces alert) -->
+  <div id="toast-banner" class="fixed bottom-20 md:bottom-5 right-5 z-50 hidden bg-navy text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-saffron/40 flex items-center gap-3 max-w-sm">
+    <span class="text-xl">🍛</span>
+    <p id="toast-message" class="text-xs sm:text-sm font-semibold"></p>
+  </div>
+
+  <!-- ==================== NATIVE MOBILE BOTTOM TAB BAR (ANDROID & IPHONE) ==================== -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-navy/15 shadow-2xl safe-bottom">
+    <div class="grid grid-cols-4 h-16">
+      <button onclick="goHome()" class="flex flex-col items-center justify-center gap-0.5 text-navy hover:text-saffron active:scale-95 transition">
+        <span class="text-xl">🏠</span>
+        <span class="text-[10px] font-extrabold uppercase tracking-wide">Home</span>
+      </button>
+      <button onclick="openMode1()" class="flex flex-col items-center justify-center gap-0.5 text-navy hover:text-saffron active:scale-95 transition">
+        <span class="text-xl">🍲</span>
+        <span class="text-[10px] font-extrabold uppercase tracking-wide">Dish Name</span>
+      </button>
+      <button onclick="openMode2()" class="flex flex-col items-center justify-center gap-0.5 text-navy hover:text-cardamom active:scale-95 transition">
+        <span class="text-xl">🧺</span>
+        <span class="text-[10px] font-extrabold uppercase tracking-wide">Pantry</span>
+      </button>
+      <button onclick="openInstallModal()" class="flex flex-col items-center justify-center gap-0.5 text-saffron active:scale-95 transition">
+        <span class="text-xl">📲</span>
+        <span class="text-[10px] font-extrabold uppercase tracking-wide">Install App</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== CROSS-PLATFORM APP LAUNCHER MODAL (ANDROID / IPHONE / WEB) ==================== -->
+  <div id="install-modal" class="fixed inset-0 z-50 hidden bg-navy/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border-2 border-navy/15 shadow-2xl max-w-2xl w-full overflow-hidden animate-[popIn_0.25s_ease-out]">
+      <!-- Modal Header -->
+      <div class="bg-navy text-white p-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-saffron text-white font-display text-2xl flex items-center justify-center shadow-md">
+            RB
+          </div>
+          <div>
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-turmeric block">Cross-Platform Ready</span>
+            <h3 class="font-display text-2xl">Recipe Bro — Android, iPhone & Web</h3>
+          </div>
+        </div>
+        <button onclick="closeInstallModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-saffron text-white font-bold flex items-center justify-center transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Platform Tabs -->
+      <div class="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+        <div class="grid grid-cols-3 gap-2 bg-cream p-1.5 rounded-2xl border border-navy/10">
+          <button onclick="switchPlatformTab('android')" id="tab-android" class="plat-tab py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-navy text-white transition">
+            🤖 Android App
+          </button>
+          <button onclick="switchPlatformTab('ios')" id="tab-ios" class="plat-tab py-2.5 rounded-xl font-bold text-xs sm:text-sm text-navy hover:bg-white transition">
+            🍎 iPhone (iOS)
+          </button>
+          <button onclick="switchPlatformTab('web')" id="tab-web" class="plat-tab py-2.5 rounded-xl font-bold text-xs sm:text-sm text-navy hover:bg-white transition">
+            🌐 Website & APK
+          </button>
+        </div>
+
+        <!-- Android Tab Content -->
+        <div id="panel-android" class="space-y-4">
+          <div class="bg-cardamom/10 border border-cardamom/30 rounded-2xl p-4 flex items-start gap-3">
+            <span class="text-2xl">🤖</span>
+            <div>
+              <h4 class="font-display text-lg text-navy">Install Native Android App (Zero Play Store Wait)</h4>
+              <p class="text-xs sm:text-sm text-navy/80 mt-1">
+                Recipe Bro includes a built-in Android WebAPK manifest and offline kitchen cache so it installs straight onto your Android home screen with full-screen app behavior.
+              </p>
+            </div>
+          </div>
+
+          <button id="native-install-btn" onclick="triggerNativeInstall()" class="w-full py-3.5 rounded-2xl bg-saffron hover:bg-saffronDark text-white font-display text-lg shadow-md transition">
+            ⬇️ Install Recipe Bro on Android Now
+          </button>
+
+          <ol class="text-xs sm:text-sm text-navy/85 space-y-2 bg-cream p-4 rounded-2xl border border-navy/10 list-decimal list-inside">
+            <li>Open this Recipe Bro link in <strong>Google Chrome</strong> on your Android phone.</li>
+            <li>Tap the <strong>Three Dots (⋮)</strong> menu in the top-right corner.</li>
+            <li>Select <strong>"Add to Home screen"</strong> or <strong>"Install App"</strong>.</li>
+            <li>The <strong>Recipe Bro</strong> icon appears in your Android app drawer—works offline in your kitchen!</li>
+          </ol>
+        </div>
+
+        <!-- iPhone (iOS) Tab Content -->
+        <div id="panel-ios" class="hidden space-y-4">
+          <div class="bg-saffron/10 border border-saffron/30 rounded-2xl p-4 flex items-start gap-3">
+            <span class="text-2xl">🍎</span>
+            <div>
+              <h4 class="font-display text-lg text-navy">Install on iPhone & iPad (iOS Native Mode)</h4>
+              <p class="text-xs sm:text-sm text-navy/80 mt-1">
+                Configured with Apple Mobile Web App full-screen status bar and custom Recipe Bro home screen icon.
+              </p>
+            </div>
+          </div>
+
+          <ol class="text-xs sm:text-sm text-navy/85 space-y-2.5 bg-cream p-4 rounded-2xl border border-navy/10 list-decimal list-inside">
+            <li>Open Recipe Bro in <strong>Safari</strong> on your iPhone or iPad.</li>
+            <li>Tap the <strong>Share icon (⍐)</strong> at the bottom center of Safari.</li>
+            <li>Scroll down and tap <strong>"Add to Home Screen"</strong>.</li>
+            <li>Tap <strong>"Add"</strong> in the top-right corner to launch Recipe Bro like a native iOS App.</li>
+          </ol>
+        </div>
+
+        <!-- Website & App Store Packaging Tab Content -->
+        <div id="panel-web" class="hidden space-y-4">
+          <div class="bg-navy/5 border border-navy/15 rounded-2xl p-4 space-y-2">
+            <h4 class="font-display text-lg text-navy">🌐 Live Website + Play Store / App Store Packaging</h4>
+            <p class="text-xs sm:text-sm text-navy/80 leading-relaxed">
+              This single-file codebase powers your <strong>Responsive Website</strong> immediately. To publish to the <strong>Google Play Store (.AAB/.APK)</strong> and <strong>Apple App Store (.IPA)</strong> using this exact file:
+            </p>
+            <ul class="text-xs text-navy/80 space-y-1.5 list-disc list-inside pt-1">
+              <li><strong>Google Play Store:</strong> Wrap this hosted URL with <em>Trusted Web Activity (Bubblewrap)</em> or <em>Capacitor Android</em>.</li>
+              <li><strong>Apple App Store:</strong> Wrap with <em>Capacitor iOS (WKWebView)</em> in Xcode—zero login required!</li>
+              <li><strong>Instant Offline Kitchen Mode:</strong> Service Worker caches your recipes & ratings locally on device.</li>
+            </ul>
+          </div>
+          <button onclick="downloadStandaloneBundle()" class="w-full py-3.5 rounded-2xl bg-navy hover:bg-saffron text-white font-display text-base shadow-md transition">
+            📦 Download Self-Contained Website & Mobile Bundle (.html)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+  <script>
+    // -------------------- INGREDIENT REFERENCE THUMBNAILS (Reliable Unsplash / SVG Data Fallbacks) --------------------
+    const ING_IMAGES = {
+      rice: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=160&q=80",
+      chicken: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=160&q=80",
+      mutton: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=160&q=80",
+      fish: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=160&q=80",
+      paneer: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=160&q=80",
+      onion: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=160&q=80",
+      tomato: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=160&q=80",
+      gingerGarlic: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=160&q=80",
+      spices: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=160&q=80",
+      chili: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=160&q=80",
+      yogurt: "https://images.unsplash.com/photo-1571212515416-fef01fc43637?auto=format&fit=crop&w=160&q=80",
+      gheeOil: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=160&q=80",
+      herbs: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=160&q=80",
+      lentils: "https://images.unsplash.com/photo-1585996649730-3162b305632f?auto=format&fit=crop&w=160&q=80",
+      veggies: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=160&q=80",
+      coconut: "https://images.unsplash.com/photo-1580984969071-a8da5656c4fb?auto=format&fit=crop&w=160&q=80",
+      tamarind: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=160&q=80"
+    };
+
+    // Fallback SVG if an image fails offline
+    const FALLBACK_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23F5ECDC'/><text x='50%' y='52%' dominant-baseline='middle' text-anchor='middle' font-size='54'>🍛</text></svg>";
+
+    // -------------------- RICH INDIAN RECIPE DATABASE (16 ICONIC DISHES + REGIONAL STYLES) --------------------
+    const RECIPES_DB = [
+      {
+        id: "chicken-biryani",
+        name: "Chicken Dum Biryani",
+        category: "Rice & Biryani",
+        image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 55,
+        rating: 4.9,
+        ratingCount: 428,
+        keywords: ["chicken", "basmati rice", "onions", "yogurt", "mint", "coriander", "ginger garlic paste", "garam masala", "ghee", "green chilies", "saffron"],
+        styles: [
+          {
+            state: "Hyderabadi Telangana Style",
+            spiceLevel: "🌶️🌶️🌶️ Bold & Aromatic (Kacchi/Pakki Dum)",
+            tagline: "Rich saffron-infused basmati layered over fiery yogurt-marinated chicken with crispy birista onions.",
+            extraIngredient: { name: "Saffron Milk & Fried Onions (Birista)", perPerson: 25, unit: "g", img: ING_IMAGES.spices },
+            plating: "Cut vertically through the dum layers with a flat rice ladle so white saffron rice and spicy masala chicken mix evenly. Serve piping hot with Mirchi Ka Salan and cool Cucumber Raita."
+          },
+          {
+            state: "Andhra Spicy Fry-Piece Style",
+            spiceLevel: "🌶️🌶️🌶️🌶️ Fiery Guntur Chili Kick",
+            tagline: "Double-roasted peppery chicken masala tossed with caramelized shallots and fragrant short/long grain rice.",
+            extraIngredient: { name: "Guntur Red Chili & Crushed Black Pepper", perPerson: 8, unit: "g", img: ING_IMAGES.chili },
+            plating: "Garnish with roasted cashews, crispy curry leaves, and fresh lemon wedges. Pair with spicy Andhra Gongura Pachadi and onion raita."
+          },
+          {
+            state: "Kerala Malabar Thalassery Style",
+            spiceLevel: "🌶️🌶️ Mild, Sweet & Nutty",
+            tagline: "Made with short-grain Kaima/Jeerakasala rice, roasted cashews, raisins, fennel, and pure Malabar ghee.",
+            extraIngredient: { name: "Cashews, Raisins & Fennel Powder", perPerson: 15, unit: "g", img: ING_IMAGES.gheeOil },
+            plating: "Top with golden ghee-fried cashews and plump raisins. Serve alongside tangy date-lime pickle and coconut chamomile raita."
+          },
+          {
+            state: "Lucknowi Awadhi Style",
+            spiceLevel: "🌶️🌶️ Royal & Floral (Kewra & Rose)",
+            tagline: "Delicate yakhni stock-cooked rice infused with kewra water, mace, green cardamom, and melt-in-mouth chicken.",
+            extraIngredient: { name: "Kewra Water, Mace & Green Cardamom", perPerson: 5, unit: "ml", img: ING_IMAGES.spices },
+            plating: "Serve on a wide royal platter garnished with silver varq or toasted almonds and mint sprigs, paired with Burhani garlic raita."
+          }
+        ],
+        baseIngredients: [
+          { name: "Aged Basmati / Regional Rice", perPerson: 110, unit: "g", img: ING_IMAGES.rice },
+          { name: "Bone-in Chicken (Biryani Cut)", perPerson: 160, unit: "g", img: ING_IMAGES.chicken },
+          { name: "Thinly Sliced Onions", perPerson: 65, unit: "g", img: ING_IMAGES.onion },
+          { name: "Thick Curd / Yogurt", perPerson: 45, unit: "g", img: ING_IMAGES.yogurt },
+          { name: "Ginger-Garlic Paste", perPerson: 12, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Fresh Mint & Coriander Leaves", perPerson: 15, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Pure Desi Ghee & Cooking Oil", perPerson: 18, unit: "ml", img: ING_IMAGES.gheeOil },
+          { name: "Whole Garam Masala & Biryani Spice", perPerson: 6, unit: "g", img: ING_IMAGES.spices }
+        ],
+        steps: [
+          {
+            title: "Deep Marination & Rice Soaking",
+            durationMin: 15,
+            baseTemp: "Room Temperature (No Heat Yet)",
+            heatShift: "Keep stove OFF during marination; soak rice in cool water for 25 mins so grains elongate without breaking.",
+            ingIndices: [1, 3, 4, 5, 7],
+            instruction: "Wash chicken thoroughly and pat dry. Combine chicken with thick curd, ginger-garlic paste, salt, turmeric, regional chili/spice blend, chopped mint, and coriander. Simultaneously rinse rice 3 times until water runs clear, then soak.",
+            mixing: "Massage the marinade firmly into the chicken pieces with your hand or a heavy spoon for 3 full minutes so spices penetrate deep into the meat fibers.",
+            sensory: "Chicken should be coated in a thick, glossy masala paste with zero watery separation."
+          },
+          {
+            title: "Browning Onions (Birista) & Searing Chicken",
+            durationMin: 12,
+            baseTemp: "Medium-High Flame (200°C)",
+            heatShift: "🔺 Start on HIGH flame to heat oil/ghee, then 🔻 REDUCE to MEDIUM once onions turn golden so they caramelize evenly without burning.",
+            ingIndices: [2, 6],
+            instruction: "Heat ghee and oil in a heavy-bottomed handi. Fry thinly sliced onions stirring constantly until crisp golden brown. Remove half for layering, then add marinated chicken into the remaining onions and hot ghee.",
+            mixing: "Stir-fry vigorously in wide sweeping motions from the bottom for 5 minutes to sear the chicken, then fold gently every 2 minutes as yogurt releases moisture.",
+            sensory: "Oil/ghee must separate cleanly around the edges and the raw ginger-garlic smell must disappear completely."
+          },
+          {
+            title: "Par-Boiling Fragrant Rice to 75% Doneness",
+            durationMin: 8,
+            baseTemp: "Rolling Boil — High Flame (100°C Water)",
+            heatShift: "🔺 Keep on HIGH flame throughout boiling so rice dances freely and doesn't turn mushy.",
+            ingIndices: [0, 7],
+            instruction: "In a separate wide pot, bring 4x water to a vigorous boil with salt (water should taste mildly salty like sea water) and whole spices. Drain soaked rice and slide it into boiling water.",
+            mixing: "Stir ONCE gently right after adding rice using a slotted spoon so grains don't stick to the base. Do not over-stir!",
+            sensory: "Test a grain between your thumb and forefinger: it should bend slightly and break into 2–3 pieces with a tiny chalky core (75% cooked)."
+          },
+          {
+            title: "Aromatic Layering & Sealed Dum Cooking",
+            durationMin: 18,
+            baseTemp: "Ultra-Low Simmer (105°C – 115°C)",
+            heatShift: "🔺 High heat for 2 mins to build steam inside the sealed pot, then 🔻 IMMEDIATELY drop to LOWEST flame (place a flat tawa underneath) for 15 mins.",
+            ingIndices: [5, 6],
+            instruction: "Spread seared chicken evenly at the bottom of the pot. Layer the 75% cooked rice over it. Top with reserved crispy onions, fresh mint, coriander, regional aromatic essence, and a drizzle of warm ghee. Seal tightly with foil or dough.",
+            mixing: "DO NOT MIX during layering or dum! Keep layers distinct so bottom chicken absorbs rice starch while top rice absorbs rising spice steam.",
+            sensory: "After 15 mins on low heat, switch off flame and let it rest UNOPENED for 10 mins. When unsealed, fragrant steam rushes out and every grain stands separate."
+          }
+        ]
+      },
+      {
+        id: "paneer-butter-masala",
+        name: "Paneer Butter Masala",
+        category: "Curries & Gravies",
+        image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 35,
+        rating: 4.9,
+        ratingCount: 389,
+        keywords: ["paneer", "tomatoes", "onions", "butter", "cream", "cashews", "ginger garlic paste", "kasuri methi", "garam masala", "turmeric"],
+        styles: [
+          {
+            state: "Punjabi Dhaba Rich Style",
+            spiceLevel: "🌶️🌶️ Creamy, Smoky & Tangy",
+            tagline: "Velvety tomato-cashew gravy finished with generous white butter, fresh cream, and roasted kasuri methi.",
+            extraIngredient: { name: "Fresh Cream & Crushed Kasuri Methi", perPerson: 15, unit: "ml", img: ING_IMAGES.yogurt },
+            plating: "Swirl fresh cream on top, sprinkle crushed kasuri methi, and serve hot with butter naan or jeera rice."
+          },
+          {
+            state: "South Indian Restaurant Sweet-Spicy Style",
+            spiceLevel: "🌶️🌶️ Mildly Sweet & Aromatic",
+            tagline: "Smooth silky gravy with a hint of cardamom, roasted melon seeds, and soft warm paneer cubes.",
+            extraIngredient: { name: "Green Cardamom & Honey/Sugar Touch", perPerson: 4, unit: "g", img: ING_IMAGES.spices },
+            plating: "Garnish with grated paneer and coriander leaves; pair with Malabar parotta or ghee rice."
+          },
+          {
+            state: "Hyderabadi Spicy Tikka Masala Style",
+            spiceLevel: "🌶️🌶️🌶️ Char-Grilled & Bold",
+            tagline: "Pan-seared spiced paneer cubes simmered in a deeper roasted onion-tomato masala.",
+            extraIngredient: { name: "Kashmiri Chili & Roasted Cumin", perPerson: 6, unit: "g", img: ING_IMAGES.chili },
+            plating: "Top with charred bell pepper strips and ginger juliennes; serve with tandoori roti."
+          }
+        ],
+        baseIngredients: [
+          { name: "Fresh Malai Paneer (Cubes)", perPerson: 100, unit: "g", img: ING_IMAGES.paneer },
+          { name: "Ripe Red Tomatoes (Chopped)", perPerson: 110, unit: "g", img: ING_IMAGES.tomato },
+          { name: "Red Onions (Sliced)", perPerson: 50, unit: "g", img: ING_IMAGES.onion },
+          { name: "Whole Cashew Nuts", perPerson: 12, unit: "g", img: ING_IMAGES.spices },
+          { name: "Salted Butter & Oil", perPerson: 16, unit: "g", img: ING_IMAGES.gheeOil },
+          { name: "Ginger-Garlic Paste", perPerson: 10, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Kashmiri Red Chili & Garam Masala", perPerson: 6, unit: "g", img: ING_IMAGES.chili },
+          { name: "Fresh Coriander Leaves", perPerson: 8, unit: "g", img: ING_IMAGES.herbs }
+        ],
+        steps: [
+          {
+            title: "Simmering Tomato-Onion-Cashew Makhani Base",
+            durationMin: 12,
+            baseTemp: "Medium Flame (175°C)",
+            heatShift: "🔺 Start on MEDIUM-HIGH for 2 mins to soften onions, then 🔻 REDUCE to MEDIUM-LOW once tomatoes and water are added so cashews soften evenly.",
+            ingIndices: [1, 2, 3, 4],
+            instruction: "Melt half the butter with a splash of oil (prevents butter from burning). Sauté onions for 3 mins, then add ripe tomatoes, cashews, salt, and a splash of water. Cover and simmer until tomatoes turn completely mushy.",
+            mixing: "Stir every 2–3 minutes scraping the bottom so cashews don't stick. Cool slightly and blend into an ultra-smooth puree.",
+            sensory: "Tomato skins should peel away easily and cashews should crush effortlessly between your fingers."
+          },
+          {
+            title: "Bhunao (Roasting) Spices in Butter",
+            durationMin: 8,
+            baseTemp: "Low-Medium Flame (140°C)",
+            heatShift: "🔻 MUST LOWER flame to LOW before adding Kashmiri chili powder and ginger-garlic paste so the butter and spices turn bright crimson without scorching!",
+            ingIndices: [4, 5, 6],
+            instruction: "In the same pan, melt remaining butter on low heat. Add ginger-garlic paste and sauté for 60 seconds, then add Kashmiri red chili powder and strained tomato-cashew puree.",
+            mixing: "Whisk continuously in circular motions as the puree meets the spiced butter to create a glossy, emulsified makhani sauce.",
+            sensory: "Tiny bubbles of red-gold butter will surface around the edges of the pan within 5 minutes."
+          },
+          {
+            title: "Simmering Soft Paneer & Finishing Touch",
+            durationMin: 6,
+            baseTemp: "Gentle Simmer — Low Flame (115°C)",
+            heatShift: "🔻 Keep on LOW flame. Never boil paneer rapidly on high heat or it becomes rubbery!",
+            ingIndices: [0, 7],
+            instruction: "Soak paneer cubes in warm salted water for 5 mins (secret for melt-in-mouth softness!), drain, and slide into the simmering gravy along with garam masala and regional finishing touches.",
+            mixing: "Fold gently using a silicone or wooden spatula in a figure-8 motion so delicate paneer cubes stay intact.",
+            sensory: "Gravy coats the back of a spoon smoothly and paneer feels pillow-soft when pierced."
+          }
+        ]
+      },
+      {
+        id: "masala-dosa",
+        name: "Crispy Masala Dosa & Potato Bhaji",
+        category: "Breakfast & Tiffins",
+        image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 30,
+        rating: 4.9,
+        ratingCount: 512,
+        keywords: ["dosa batter", "rice", "urad dal", "potatoes", "onions", "mustard seeds", "curry leaves", "turmeric", "green chilies", "ghee"],
+        styles: [
+          {
+            state: "Karnataka Udupi / Bangalore Hotel Style",
+            spiceLevel: "🌶️🌶️ Crispy Red-Chutney & Ghee Roast",
+            tagline: "Golden thick-crisp dosa brushed with spicy garlic red chutney and generous melted Nandini ghee.",
+            extraIngredient: { name: "Garlic-Red Chili Chutney Paste", perPerson: 15, unit: "g", img: ING_IMAGES.chili },
+            plating: "Fold neatly over spiced yellow potato masala and serve immediately with coconut chutney and sweet-tangy Udupi sambar."
+          },
+          {
+            state: "Tamil Nadu Classic Thin Paper Roast",
+            spiceLevel: "🌶️ Mild, Crackling & Golden",
+            tagline: "Ultra-thin, lacy crackling crepe roasted with sesame/gingelly oil and ginger-infused potato masala.",
+            extraIngredient: { name: "Gingelly (Sesame) Oil & Fresh Ginger", perPerson: 10, unit: "ml", img: ING_IMAGES.gheeOil },
+            plating: "Roll into a crisp cylinder and serve with 3 chutneys (white coconut, tomato kara, mint) and hot arachuvitta sambar."
+          },
+          {
+            state: "Andhra Karam Dosa Style",
+            spiceLevel: "🌶️🌶️🌶️ Spicy Roasted Gram & Chili Podi",
+            tagline: "Coated inside with fiery roasted onion-chili karam paste and gunpowder podi.",
+            extraIngredient: { name: "Andhra Erra Karam & Roasted Chana Dal", perPerson: 18, unit: "g", img: ING_IMAGES.spices },
+            plating: "Serve piping hot with ginger chutney (Allam Pachadi) and peanut chutney."
+          }
+        ],
+        baseIngredients: [
+          { name: "Fermented Dosa Batter (Rice & Urad)", perPerson: 150, unit: "ml", img: ING_IMAGES.rice },
+          { name: "Boiled & Peeled Potatoes", perPerson: 110, unit: "g", img: ING_IMAGES.veggies },
+          { name: "Thinly Sliced Onions", perPerson: 45, unit: "g", img: ING_IMAGES.onion },
+          { name: "Mustard Seeds, Chana Dal & Cumin", perPerson: 5, unit: "g", img: ING_IMAGES.spices },
+          { name: "Green Chilies & Fresh Curry Leaves", perPerson: 8, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Turmeric Powder & Salt", perPerson: 3, unit: "g", img: ING_IMAGES.spices },
+          { name: "Desi Ghee / Cooking Oil", perPerson: 15, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Tempering & Preparing the Potato Masala",
+            durationMin: 10,
+            baseTemp: "Medium Flame (170°C)",
+            heatShift: "🔺 Medium heat to pop mustard seeds, then 🔻 REDUCE to LOW when adding turmeric and mashed potatoes so it stays moist.",
+            ingIndices: [1, 2, 3, 4, 5, 6],
+            instruction: "Heat oil, splutter mustard seeds, chana dal, curry leaves, and slit green chilies. Sauté sliced onions until translucent (don't brown them!). Add turmeric, salt, a splash of water, and roughly crumbled boiled potatoes.",
+            mixing: "Mash and fold potatoes lightly with the back of your ladle so a creamy texture binds small chunks together.",
+            sensory: "Bright golden-yellow masala that holds its shape without feeling dry."
+          },
+          {
+            title: "Seasoning Tawa & Spreading Crisp Dosa",
+            durationMin: 8,
+            baseTemp: "Medium-High Tawa (210°C)",
+            heatShift: "🔺 Heat tawa on HIGH until hot, sprinkle water & wipe with oiled onion half, then 🔻 LOWER to MEDIUM before pouring batter so it spreads smoothly!",
+            ingIndices: [0, 6],
+            instruction: "Pour a ladleful of room-temperature batter in the center of the tawa. Immediately spiral outward with the flat base of the ladle in thin concentric circles. Drizzle ghee/oil around the edges and center.",
+            mixing: "Stir the dosa batter gently from bottom to top before scooping each ladle so aeration stays uniform.",
+            sensory: "Tiny pores form across the surface and edges lift naturally from the tawa turning deep golden brown."
+          },
+          {
+            title: "Stuffing Masala & Folding Hot",
+            durationMin: 3,
+            baseTemp: "Medium Flame (180°C)",
+            heatShift: "Keep steady on MEDIUM until underside is uniformly crisp, then fold right on the tawa.",
+            ingIndices: [1],
+            instruction: "Spread regional chutney/podi inside if using, place a generous scoop of warm potato masala in the center, and fold the dosa in half or tri-fold.",
+            mixing: "Press lightly with the flat spatula for 5 seconds so the crisp dosa hugs the warm potato filling.",
+            sensory: "Audible crunch when tapped with a spatula!"
+          }
+        ]
+      },
+      {
+        id: "fish-curry",
+        name: "Coastal Indian Fish Curry",
+        category: "Curries & Gravies",
+        image: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 35,
+        rating: 4.8,
+        ratingCount: 294,
+        keywords: ["fish", "tamarind", "tomatoes", "onions", "coconut", "curry leaves", "fenugreek", "turmeric", "chili powder", "garlic"],
+        styles: [
+          {
+            state: "Andhra Nellore Chepala Pulusu",
+            spiceLevel: "🌶️🌶️🌶️🌶️ Tangy Tamarind & Raw Mango",
+            tagline: "Iconic fiery-tangy tamarind gravy tempered with fenugreek (menthulu) and finished with raw mango slices.",
+            extraIngredient: { name: "Tamarind Pulp & Raw Mango Slices", perPerson: 25, unit: "g", img: ING_IMAGES.tamarind },
+            plating: "Best rested for 2 hours so fish absorbs the pulusu! Serve with hot steamed white rice or ragi sangati."
+          },
+          {
+            state: "Kerala Meen Moilee / Kudampuli Curry",
+            spiceLevel: "🌶️🌶️ Creamy Coconut Milk & Curry Leaf",
+            tagline: "Silky coconut milk and kokum/tamarind gravy infused with crushed ginger, green chilies, and coconut oil.",
+            extraIngredient: { name: "Thick Coconut Milk & Kokum", perPerson: 50, unit: "ml", img: ING_IMAGES.coconut },
+            plating: "Drizzle raw virgin coconut oil and fresh curry leaves on top; serve with appam, idiyappam, or matta rice."
+          },
+          {
+            state: "Goan Xec Xec / Coconut Chili Curry",
+            spiceLevel: "🌶️🌶️🌶️ Roasted Coconut & Kashmiri Chili",
+            tagline: "Velvety freshly ground coconut, coriander seed, and Kashmiri chili gravy with tangy kokum.",
+            extraIngredient: { name: "Grated Fresh Coconut & Coriander Seeds", perPerson: 35, unit: "g", img: ING_IMAGES.coconut },
+            plating: "Serve steaming hot with Goan red ukda rice and fried fish or sol kadhi."
+          }
+        ],
+        baseIngredients: [
+          { name: "Firm Fish Steaks (Seer / Rohu / Kingfish)", perPerson: 150, unit: "g", img: ING_IMAGES.fish },
+          { name: "Finely Chopped Onions", perPerson: 55, unit: "g", img: ING_IMAGES.onion },
+          { name: "Ripe Tomatoes", perPerson: 60, unit: "g", img: ING_IMAGES.tomato },
+          { name: "Garlic Cloves & Ginger", perPerson: 12, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Fenugreek (Methi) & Mustard Seeds", perPerson: 3, unit: "g", img: ING_IMAGES.spices },
+          { name: "Red Chili, Coriander & Turmeric Powder", perPerson: 8, unit: "g", img: ING_IMAGES.chili },
+          { name: "Fresh Curry Leaves & Coriander", perPerson: 10, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Oil (Sesame / Coconut / Groundnut)", perPerson: 15, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Fenugreek Tempering & Onion-Tomato Masala",
+            durationMin: 10,
+            baseTemp: "Medium Flame (175°C)",
+            heatShift: "🔻 Keep flame LOW-MEDIUM when popping fenugreek seeds—if fenugreek burns, the entire fish curry turns bitter!",
+            ingIndices: [1, 2, 3, 4, 5, 7],
+            instruction: "Heat oil in a wide clay pot or heavy pan. Pop mustard and fenugreek seeds, add crushed garlic, curry leaves, and onions. Sauté until golden, then add tomatoes, turmeric, chili, and coriander powder.",
+            mixing: "Mash tomatoes thoroughly with the back of your spoon until oil separates from the masala paste.",
+            sensory: "Rich reddish-brown masala paste with oil glistening on top."
+          },
+          {
+            title: "Boiling the Tangy / Coconut Gravy Base",
+            durationMin: 8,
+            baseTemp: "Medium-High Boil (100°C)",
+            heatShift: "🔺 Increase to MEDIUM-HIGH to bring tamarind/coconut liquid to a lively boil so raw tamarind smell vanishes.",
+            ingIndices: [6],
+            instruction: "Pour in regional tamarind extract or thin coconut milk with salt and water. Bring to a brisk boil for 6–7 minutes until the gravy thickens slightly.",
+            mixing: "Stir well to dissolve all masala lumps into a unified, velvety broth.",
+            sensory: "Raw sourness mellows into a deeply savory, balanced aroma."
+          },
+          {
+            title: "Poaching Delicate Fish Steaks (No Spoon Rule!)",
+            durationMin: 8,
+            baseTemp: "Gentle Simmer — Low Flame (110°C)",
+            heatShift: "🔻 IMMEDIATELY drop flame to LOW before sliding fish steaks in so tender fish doesn't break apart.",
+            ingIndices: [0, 6],
+            instruction: "Gently place marinated fish steaks in a single layer into the simmering gravy. Cover and cook for 6–8 minutes.",
+            mixing: "NEVER stir with a spoon after adding fish! Instead, hold both handles of the pot and gently swirl the vessel in a circular motion.",
+            sensory: "Fish turns opaque white and flakes effortlessly with a fork while oil floats cleanly on top."
+          }
+        ]
+      },
+      {
+        id: "dal-tadka",
+        name: "Restaurant Style Dal Tadka",
+        category: "Curries & Gravies",
+        image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 30,
+        rating: 4.8,
+        ratingCount: 340,
+        keywords: ["toor dal", "moong dal", "lentils", "tomatoes", "onions", "garlic", "cumin", "ghee", "turmeric", "dried red chilies", "hing"],
+        styles: [
+          {
+            state: "Punjabi Dhaba Double-Tadka Style",
+            spiceLevel: "🌶️🌶️ Smoky Garlic & Ghee",
+            tagline: "Creamy yellow toor-moong dal finished with a sizzling desi ghee, burnt garlic, and Kashmiri chili tadka.",
+            extraIngredient: { name: "Extra Desi Ghee, Whole Red Chilies & Hing", perPerson: 12, unit: "g", img: ING_IMAGES.gheeOil },
+            plating: "Pour the sizzling red ghee tadka right at the table over hot dal; serve with jeera rice or tandoori roti."
+          },
+          {
+            state: "Andhra Mudda Pappu & Pesara Tadka Style",
+            spiceLevel: "🌶️🌶️ Comforting Curry Leaf & Mustard",
+            tagline: "Velvety mashed lentils tempered with mustard seeds, crushed garlic pods, and fresh curry leaves.",
+            extraIngredient: { name: "Mustard Seeds & Fresh Curry Leaves", perPerson: 5, unit: "g", img: ING_IMAGES.herbs },
+            plating: "Serve over hot steamed rice with a dollop of pure cow ghee and mango avakaya pickle."
+          }
+        ],
+        baseIngredients: [
+          { name: "Toor Dal (Split Pigeon Peas)", perPerson: 55, unit: "g", img: ING_IMAGES.lentils },
+          { name: "Yellow Moong Dal", perPerson: 15, unit: "g", img: ING_IMAGES.lentils },
+          { name: "Finely Chopped Onions", perPerson: 35, unit: "g", img: ING_IMAGES.onion },
+          { name: "Finely Chopped Tomatoes", perPerson: 45, unit: "g", img: ING_IMAGES.tomato },
+          { name: "Finely Chopped Garlic & Ginger", perPerson: 10, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Cumin Seeds & Turmeric", perPerson: 4, unit: "g", img: ING_IMAGES.spices },
+          { name: "Pure Desi Ghee", perPerson: 14, unit: "ml", img: ING_IMAGES.gheeOil },
+          { name: "Fresh Coriander & Green Chilies", perPerson: 8, unit: "g", img: ING_IMAGES.herbs }
+        ],
+        steps: [
+          {
+            title: "Pressure Cooking Silky Lentils",
+            durationMin: 12,
+            baseTemp: "High to Medium Flame (120°C Pressure)",
+            heatShift: "🔺 High flame until 1st whistle, then 🔻 REDUCE to LOW-MEDIUM for 3 more whistles so dal cooks creamy without overflowing.",
+            ingIndices: [0, 1, 5],
+            instruction: "Rinse toor and moong dal thoroughly. Pressure cook with 3x water, turmeric, salt, and 1 tsp ghee until soft and creamy.",
+            mixing: "Whisk the cooked dal lightly with a wooden mathani or ladle—keep 20% tiny lentil texture for authentic dhaba feel.",
+            sensory: "Smooth, pourable golden lentil base with zero hard centers."
+          },
+          {
+            title: "First Masala Tempering & Simmering",
+            durationMin: 8,
+            baseTemp: "Medium Flame (175°C)",
+            heatShift: "Maintain MEDIUM flame to caramelize onions and tomatoes before pouring in the boiled dal.",
+            ingIndices: [2, 3, 4, 6, 7],
+            instruction: "Heat half the ghee, crackle cumin seeds, sauté ginger, half the garlic, green chilies, and onions until golden. Add tomatoes and cook soft, then pour in whisked dal and simmer 5 mins.",
+            mixing: "Stir continuously as dal comes to a gentle simmer so water and lentils emulsify instead of separating.",
+            sensory: "Rich, unified consistency that coats a spoon."
+          },
+          {
+            title: "The Signature Sizzling Garlic-Chili Tadka",
+            durationMin: 3,
+            baseTemp: "High Heat Tadka Ladle (195°C)",
+            heatShift: "🔺 Heat ghee until shimmering, then TURN OFF flame before adding Kashmiri chili powder so it turns bright red without burning!",
+            ingIndices: [4, 5, 6],
+            instruction: "In a small tadka pan, heat remaining ghee, fry sliced garlic until golden, add cumin, hing, whole red chilies, and off-heat Kashmiri chili powder. Immediately pour sizzling tadka over the dal!",
+            mixing: "Swirl lightly on top and cover for 1 minute to trap the smoky garlic aroma.",
+            sensory: "Loud sizzle and intoxicating roasted garlic-ghee fragrance."
+          }
+        ]
+      },
+      {
+        id: "sambar",
+        name: "Authentic South Indian Sambar",
+        category: "Curries & Gravies",
+        image: "https://images.unsplash.com/photo-1630383249896-424e482df921?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 35,
+        rating: 4.8,
+        ratingCount: 315,
+        keywords: ["toor dal", "drumstick", "carrot", "okra", "tamarind", "sambar powder", "mustard seeds", "curry leaves", "shallots", "tomatoes"],
+        styles: [
+          {
+            state: "Tamil Nadu Arachuvitta (Fresh Ground) Style",
+            spiceLevel: "🌶️🌶️ Roasted Coconut & Coriander Aroma",
+            tagline: "Thick, fragrant sambar enriched with freshly roasted coriander seeds, chana dal, red chilies, and coconut.",
+            extraIngredient: { name: "Fresh Coconut & Roasted Sambar Spice Paste", perPerson: 20, unit: "g", img: ING_IMAGES.coconut },
+            plating: "Finish with ghee-fried mustard, curry leaves, and asafoetida; serve over hot rice, idli, or medu vada."
+          },
+          {
+            state: "Karnataka Udupi Hotel Style",
+            spiceLevel: "🌶️🌶️ Sweet-Tangy Jaggery Balance",
+            tagline: "Distinctive Udupi spice blend balanced with a touch of jaggery, ash gourd, and shallots.",
+            extraIngredient: { name: "Organic Jaggery & Byadagi Chili Paste", perPerson: 10, unit: "g", img: ING_IMAGES.spices },
+            plating: "Garnish with fresh coriander and serve with crispy masala dosa or steaming hot idlis."
+          },
+          {
+            state: "Andhra Pappu Charu / Sambar Style",
+            spiceLevel: "🌶️🌶️🌶️ Tangy & Peppery",
+            tagline: "Lighter, punchier tamarind-lentil broth loaded with drumsticks, shallots, and crushed garlic.",
+            extraIngredient: { name: "Crushed Garlic & Tamarind Extract", perPerson: 15, unit: "g", img: ING_IMAGES.tamarind },
+            plating: "Serve hot alongside steamed rice, papad, and crispy potato fry."
+          }
+        ],
+        baseIngredients: [
+          { name: "Toor Dal (Split Pigeon Peas)", perPerson: 45, unit: "g", img: ING_IMAGES.lentils },
+          { name: "Mixed Vegetables (Drumstick, Carrot, Shallots)", perPerson: 85, unit: "g", img: ING_IMAGES.veggies },
+          { name: "Ripe Tomatoes", perPerson: 40, unit: "g", img: ING_IMAGES.tomato },
+          { name: "Tamarind Pulp", perPerson: 12, unit: "g", img: ING_IMAGES.tamarind },
+          { name: "Authentic Sambar Powder", perPerson: 8, unit: "g", img: ING_IMAGES.spices },
+          { name: "Mustard Seeds, Fenugreek & Hing", perPerson: 3, unit: "g", img: ING_IMAGES.spices },
+          { name: "Fresh Curry Leaves & Coriander", perPerson: 8, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Ghee / Sesame Oil", perPerson: 10, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Cooking Vegetables in Tangy Tamarind Broth",
+            durationMin: 12,
+            baseTemp: "Medium-High Boil (100°C)",
+            heatShift: "🔺 Boil on MEDIUM-HIGH for 8 mins until raw tamarind smell disappears and drumsticks turn tender.",
+            ingIndices: [1, 2, 3, 4],
+            instruction: "In a heavy pot, simmer shallots, drumsticks, carrots, and tomatoes in diluted tamarind water with salt, turmeric, and sambar powder until veggies are 90% tender.",
+            mixing: "Stir gently every 3 minutes so drumsticks cook evenly without splitting open.",
+            sensory: "Raw tamarind tartness transforms into a sweet-savory spiced vegetable broth."
+          },
+          {
+            title: "Whisking & Simmering Cooked Toor Dal",
+            durationMin: 6,
+            baseTemp: "Gentle Simmer — Low-Medium (120°C)",
+            heatShift: "🔻 Lower flame to LOW-MEDIUM once mashed dal is added so the thick sambar doesn't scorch at the bottom.",
+            ingIndices: [0],
+            instruction: "Pour smoothly mashed pressure-cooked toor dal and regional spice/jaggery paste into the simmering vegetables. Adjust water to desired consistency and simmer 5 minutes.",
+            mixing: "Stir slowly from bottom to top in circular sweeps so dal and tamarind broth unite seamlessly.",
+            sensory: "Frothy golden bubbles form across the surface and aroma fills the kitchen."
+          },
+          {
+            title: "Ghee-Curry Leaf Tempering (Thalippu)",
+            durationMin: 2,
+            baseTemp: "High Heat Tadka (190°C)",
+            heatShift: "🔺 Pop mustard seeds on high heat, then immediately pour into sambar and cover.",
+            ingIndices: [5, 6, 7],
+            instruction: "Heat ghee, pop mustard seeds, 4 fenugreek seeds, dried red chili, generous hing, and fresh curry leaves. Pour over hot sambar and top with fresh coriander.",
+            mixing: "Give one gentle stir after 1 minute of covering to distribute the aromatic tadka.",
+            sensory: "Vibrant, tangy, aromatic South Indian comfort in every ladle."
+          }
+        ]
+      },
+      {
+        id: "mutton-curry",
+        name: "Homestyle Spicy Mutton Curry",
+        category: "Curries & Gravies",
+        image: "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 60,
+        rating: 4.9,
+        ratingCount: 276,
+        keywords: ["mutton", "lamb", "onions", "tomatoes", "ginger garlic paste", "yogurt", "garam masala", "black pepper", "curry leaves", "ghee"],
+        styles: [
+          {
+            state: "Telangana Spicy Kodi/Mamsam Kura Style",
+            spiceLevel: "🌶️🌶️🌶️🌶️ Fiery Poppy Seed & Clove Gravy",
+            tagline: "Deep roasted onion-coconut-poppy seed masala slow-cooked with tender bone-in goat meat.",
+            extraIngredient: { name: "Roasted Poppy Seeds & Dry Coconut Paste", perPerson: 18, unit: "g", img: ING_IMAGES.spices },
+            plating: "Garnish with fresh coriander and serve with hot steamed rice, jowar roti, or bagara rice."
+          },
+          {
+            state: "Kerala Pepper Mutton Roast Style",
+            spiceLevel: "🌶️🌶️🌶️ Crushed Tellicherry Pepper & Shallots",
+            tagline: "Dark roasted shallots, coconut slices, curry leaves, and freshly cracked black pepper.",
+            extraIngredient: { name: "Cracked Black Pepper & Coconut Slices", perPerson: 12, unit: "g", img: ING_IMAGES.coconut },
+            plating: "Serve with flaky Kerala parotta or steamed appam."
+          },
+          {
+            state: "Rajasthani Laal Maas Style",
+            spiceLevel: "🌶️🌶️🌶️🌶️ Smoky Mathania Chili & Garlic",
+            tagline: "Fiery crimson yogurt-garlic gravy infused with Mathania chilies and smoky clove dhungar.",
+            extraIngredient: { name: "Whole Red Chili Paste & Extra Garlic", perPerson: 15, unit: "g", img: ING_IMAGES.chili },
+            plating: "Serve piping hot with bajra roti or steamed basmati rice."
+          }
+        ],
+        baseIngredients: [
+          { name: "Tender Bone-in Mutton (Curry Cut)", perPerson: 175, unit: "g", img: ING_IMAGES.mutton },
+          { name: "Finely Sliced Onions", perPerson: 75, unit: "g", img: ING_IMAGES.onion },
+          { name: "Ripe Tomatoes", perPerson: 45, unit: "g", img: ING_IMAGES.tomato },
+          { name: "Fresh Ginger-Garlic Paste", perPerson: 15, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Thick Curd / Yogurt", perPerson: 35, unit: "g", img: ING_IMAGES.yogurt },
+          { name: "Red Chili, Coriander & Garam Masala", perPerson: 10, unit: "g", img: ING_IMAGES.spices },
+          { name: "Fresh Coriander & Curry Leaves", perPerson: 12, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Oil & Desi Ghee", perPerson: 18, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Caramelizing Onions & Bhunao Searing Mutton",
+            durationMin: 18,
+            baseTemp: "High to Medium-High Flame (200°C)",
+            heatShift: "🔺 Sear marinated mutton on HIGH flame for 6 mins to lock juices inside, then 🔻 REDUCE to MEDIUM for slow bhunao.",
+            ingIndices: [0, 1, 3, 4, 5, 7],
+            instruction: "Marinate mutton with yogurt, turmeric, ginger-garlic paste, and salt for 20 mins. Heat oil/ghee, brown sliced onions deeply, add mutton, and roast vigorously until moisture evaporates and spices coat the meat.",
+            mixing: "Turn and scrape the bottom firmly with a heavy metal ladle every 2 minutes during bhunao so spices roast without sticking.",
+            sensory: "Dark glossy masala clings tightly to every bone-in piece and oil separates cleanly."
+          },
+          {
+            title: "Slow Pressure / Simmer Tenderizing",
+            durationMin: 25,
+            baseTemp: "Medium-Low Pressure (118°C)",
+            heatShift: "🔺 High until first whistle, then 🔻 DROP to LOW-MEDIUM for 18–20 mins so collagen melts into rich gravy.",
+            ingIndices: [2],
+            instruction: "Add chopped tomatoes, regional spice paste, and hot water just enough to submerge the mutton. Pressure cook or slow-braise until meat falls off the bone.",
+            mixing: "Stir once before sealing the lid; let pressure release naturally so meat fibers stay juicy.",
+            sensory: "Mutton yields effortlessly when pressed with a spoon."
+          },
+          {
+            title: "Final Gravy Reduction & Aromatic Garnish",
+            durationMin: 6,
+            baseTemp: "Medium Simmer (145°C)",
+            heatShift: "🔺 Simmer uncovered on MEDIUM for 5 mins to thicken gravy to velvet consistency.",
+            ingIndices: [6],
+            instruction: "Open lid, sprinkle garam masala, black pepper, and fresh chopped coriander/curry leaves. Simmer uncovered until oil floats on top.",
+            mixing: "Fold gently so tender meat stays intact on the bone.",
+            sensory: "Deep, rich, aromatic gravy with a glossy rogan (oil layer) on top."
+          }
+        ]
+      },
+      {
+        id: "pulihora",
+        name: "Temple Style Pulihora (Tamarind Rice)",
+        category: "Rice & Biryani",
+        image: "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 25,
+        rating: 4.8,
+        ratingCount: 245,
+        keywords: ["rice", "tamarind", "peanuts", "mustard seeds", "chana dal", "urad dal", "curry leaves", "turmeric", "green chilies", "sesame oil"],
+        styles: [
+          {
+            state: "Andhra Temple Prasadam Style",
+            spiceLevel: "🌶️🌶️ Tangy, Nutty & Gingelly-Rich",
+            tagline: "Authentic Tirupati/Andhra style tamarind rice tempered in pure sesame oil with roasted peanuts and ginger.",
+            extraIngredient: { name: "Roasted Sesame Powder & Jaggery Touch", perPerson: 8, unit: "g", img: ING_IMAGES.spices },
+            plating: "Rest for 30 mins so rice absorbs the tangy pulusu; serve with crunchy appadam or perugu pachadi."
+          },
+          {
+            state: "Tamil Nadu Puliyodharai Style",
+            spiceLevel: "🌶️🌶️ Roasted Fenugreek-Pepper Spice",
+            tagline: "Infused with freshly roasted fenugreek, black pepper, and coriander seed podi.",
+            extraIngredient: { name: "Roasted Fenugreek-Pepper Puliyodharai Podi", perPerson: 8, unit: "g", img: ING_IMAGES.spices },
+            plating: "Serve at room temperature with roasted papad and potato podimas."
+          }
+        ],
+        baseIngredients: [
+          { name: "Cooked Grainy Rice (Cooled)", perPerson: 120, unit: "g", img: ING_IMAGES.rice },
+          { name: "Thick Tamarind Extract", perPerson: 22, unit: "ml", img: ING_IMAGES.tamarind },
+          { name: "Raw Peanuts (Groundnuts)", perPerson: 18, unit: "g", img: ING_IMAGES.spices },
+          { name: "Chana Dal, Urad Dal & Mustard Seeds", perPerson: 10, unit: "g", img: ING_IMAGES.lentils },
+          { name: "Slit Green Chilies & Dried Red Chilies", perPerson: 8, unit: "g", img: ING_IMAGES.chili },
+          { name: "Fresh Curry Leaves & Finely Chopped Ginger", perPerson: 10, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Turmeric Powder & Hing (Asafoetida)", perPerson: 3, unit: "g", img: ING_IMAGES.spices },
+          { name: "Gingelly (Sesame) Oil", perPerson: 15, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Boiling Thick Tamarind Pulusu Paste",
+            durationMin: 10,
+            baseTemp: "Medium Flame (160°C)",
+            heatShift: "🔺 Boil on MEDIUM until tamarind reduces to a glossy jam-like paste, then 🔻 REDUCE to LOW.",
+            ingIndices: [1, 4, 5, 6, 7],
+            instruction: "Heat 1/3 sesame oil, add slit green chilies, curry leaves, turmeric, salt, and thick tamarind extract. Simmer until oil separates and paste thickens.",
+            mixing: "Stir continuously near the end so the thick tamarind paste doesn't stick to the pan.",
+            sensory: "Dark, glossy, intensely tangy paste with zero watery liquid."
+          },
+          {
+            title: "Crunchy Peanut & Dal Tempering",
+            durationMin: 5,
+            baseTemp: "Low-Medium Flame (155°C)",
+            heatShift: "🔻 Keep flame LOW-MEDIUM so peanuts and chana dal roast crunchy all the way to the center without burning outside.",
+            ingIndices: [2, 3, 4, 5, 7],
+            instruction: "Heat remaining sesame oil, fry peanuts until golden and crunchy, then add mustard seeds, chana dal, urad dal, dried red chilies, ginger, hing, and crisp curry leaves.",
+            mixing: "Stir constantly in small circles for even golden crunch across every peanut and lentil.",
+            sensory: "Nutty roasted aroma and crisp crackle from curry leaves."
+          },
+          {
+            title: "Folding with Warm Grainy Rice",
+            durationMin: 4,
+            baseTemp: "Stove OFF (Residual Warmth)",
+            heatShift: "Turn OFF heat before folding rice so grains stay whole and glossy.",
+            ingIndices: [0, 6],
+            instruction: "Spread cooked rice on a wide platter, drizzle a touch of raw sesame oil and turmeric, pour the tamarind paste and crunchy tempering over it.",
+            mixing: "Lift and fold gently from the edges inward using a wide flat spatula so every grain turns bright golden yellow without mashing.",
+            sensory: "Vibrant temple-gold rice studded with crunchy peanuts and fragrant curry leaves."
+          }
+        ]
+      },
+      {
+        id: "chicken-65",
+        name: "Crispy Restaurant Chicken 65",
+        category: "Starters & Chutneys",
+        image: "https://images.unsplash.com/photo-1610057099443-fde8c9d509f9?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 30,
+        rating: 4.9,
+        ratingCount: 410,
+        keywords: ["chicken", "yogurt", "curry leaves", "garlic", "green chilies", "ginger garlic paste", "chili powder", "cornflour", "rice flour"],
+        styles: [
+          {
+            state: "Chennai Buhari Original Crispy Style",
+            spiceLevel: "🌶️🌶️🌶️ Fiery Red Chili & Curry Leaf",
+            tagline: "Double-crisped boneless chicken bites tossed with crackling curry leaves and slit green chilies.",
+            extraIngredient: { name: "Extra Curry Leaves & Slit Green Chilies", perPerson: 12, unit: "g", img: ING_IMAGES.herbs },
+            plating: "Serve sizzling hot on a bed of crisp cabbage/onions with fresh lemon wedges and mint chutney."
+          },
+          {
+            state: "Hyderabadi Saucy Yogurt-Tossed Style",
+            spiceLevel: "🌶️🌶️🌶️ Tangy Spiced Yogurt Glaze",
+            tagline: "Crispy fried chicken tossed in a vibrant spiced curd, garlic, and green chili pan glaze.",
+            extraIngredient: { name: "Whisked Curd & Chopped Garlic Glaze", perPerson: 25, unit: "g", img: ING_IMAGES.yogurt },
+            plating: "Garnish with spring onions and serve immediately as a party starter."
+          }
+        ],
+        baseIngredients: [
+          { name: "Boneless Chicken Cubes", perPerson: 150, unit: "g", img: ING_IMAGES.chicken },
+          { name: "Ginger-Garlic Paste", perPerson: 12, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Kashmiri Red Chili & Garam Masala", perPerson: 8, unit: "g", img: ING_IMAGES.chili },
+          { name: "Cornflour & Rice Flour Blend", perPerson: 22, unit: "g", img: ING_IMAGES.rice },
+          { name: "Thick Curd / Yogurt", perPerson: 20, unit: "g", img: ING_IMAGES.yogurt },
+          { name: "Fresh Curry Leaves & Green Chilies", perPerson: 12, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Oil (for Frying / Air-Fry Spray)", perPerson: 25, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Dry-Cling Crisp Coating Marination",
+            durationMin: 15,
+            baseTemp: "Room Temperature (Marination)",
+            heatShift: "No heat yet—keep batter thick so it clings to chicken rather than dripping off.",
+            ingIndices: [0, 1, 2, 3, 4],
+            instruction: "Toss boneless chicken pieces with ginger-garlic paste, Kashmiri chili powder, garam masala, salt, thick yogurt, cornflour, and rice flour.",
+            mixing: "Coat each piece thoroughly until a thick crimson crust clings evenly.",
+            sensory: "No runny liquid at the bottom of the bowl."
+          },
+          {
+            title: "Crisping Chicken to Golden Perfection",
+            durationMin: 10,
+            baseTemp: "Medium-High Oil (180°C)",
+            heatShift: "🔺 Drop chicken into 180°C hot oil (or Air Fryer at 190°C), then 🔻 LOWER slightly to MEDIUM so inside cooks juicy while outside crisps.",
+            ingIndices: [0, 6],
+            instruction: "Fry chicken pieces in batches without overcrowding until deep crimson and crisp (or Air Fry at 190°C for 12 mins, shaking halfway).",
+            mixing: "Wait 45 seconds before stirring newly dropped chicken so the crisp coating doesn't peel off.",
+            sensory: "Crunchy exterior with tender, juicy white meat inside."
+          },
+          {
+            title: "Aromatic Curry Leaf & Garlic Toss",
+            durationMin: 3,
+            baseTemp: "High Flame Wok Toss (210°C)",
+            heatShift: "🔺 Quick 60-second toss on HIGH flame so chicken stays ultra-crunchy!",
+            ingIndices: [5, 6],
+            instruction: "In a wide pan with 1 tsp oil, crackle fresh curry leaves, chopped garlic, and slit green chilies (plus spiced curd glaze if Hyderabadi style). Toss in crispy chicken.",
+            mixing: "Toss briskly for 30 seconds until every piece gleams with aromatic curry-leaf oil.",
+            sensory: "Crackling curry leaves and bold spicy aroma."
+          }
+        ]
+      },
+      {
+        id: "aloo-gobi",
+        name: "Dhaba Style Aloo Gobi Masala",
+        category: "Curries & Gravies",
+        image: "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 28,
+        rating: 4.7,
+        ratingCount: 198,
+        keywords: ["potatoes", "cauliflower", "onions", "tomatoes", "turmeric", "cumin", "ginger", "garam masala", "coriander"],
+        styles: [
+          {
+            state: "Punjabi Roasted Dry-Masala Style",
+            spiceLevel: "🌶️🌶️ Charred Florets & Ginger-Cumin",
+            tagline: "Pan-roasted cauliflower florets and golden potatoes tossed in a fragrant ginger-tomato-kasuri methi masala.",
+            extraIngredient: { name: "Ginger Juliennes & Kasuri Methi", perPerson: 6, unit: "g", img: ING_IMAGES.gingerGarlic },
+            plating: "Garnish with fresh coriander and ginger strips; serve with hot phulkas, paratha, or dal-chawal."
+          },
+          {
+            state: "South Indian Kurma / Pepper Roast Style",
+            spiceLevel: "🌶️🌶️ Fennel, Curry Leaf & Coconut",
+            tagline: "Infused with fennel seeds, curry leaves, and freshly grated coconut.",
+            extraIngredient: { name: "Fennel Seeds & Fresh Grated Coconut", perPerson: 15, unit: "g", img: ING_IMAGES.coconut },
+            plating: "Serve warm with chapati or steamed rice and rasam."
+          }
+        ],
+        baseIngredients: [
+          { name: "Cauliflower Florets (Medium Cut)", perPerson: 110, unit: "g", img: ING_IMAGES.veggies },
+          { name: "Potatoes (Diced Cubes)", perPerson: 80, unit: "g", img: ING_IMAGES.veggies },
+          { name: "Finely Chopped Onions", perPerson: 45, unit: "g", img: ING_IMAGES.onion },
+          { name: "Chopped Tomatoes", perPerson: 50, unit: "g", img: ING_IMAGES.tomato },
+          { name: "Ginger-Garlic & Cumin Seeds", perPerson: 10, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Turmeric, Coriander & Garam Masala", perPerson: 7, unit: "g", img: ING_IMAGES.spices },
+          { name: "Fresh Coriander Leaves", perPerson: 8, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Mustard / Cooking Oil", perPerson: 14, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Blistering Cauliflower & Potatoes for Nutty Flavor",
+            durationMin: 8,
+            baseTemp: "Medium-High Flame (195°C)",
+            heatShift: "🔺 Roast on MEDIUM-HIGH uncovered for 6 mins to get golden charred spots—this prevents mushy gobi!",
+            ingIndices: [0, 1, 5, 7],
+            instruction: "Heat oil in a wide kadhai, toss cauliflower florets and potato cubes with a pinch of turmeric and salt until golden spots appear, then remove to a plate.",
+            mixing: "Toss gently every 2 minutes so florets brown without breaking.",
+            sensory: "Light golden-brown edges and nutty roasted aroma."
+          },
+          {
+            title: "Building the Onion-Tomato Masala",
+            durationMin: 8,
+            baseTemp: "Medium Flame (170°C)",
+            heatShift: "🔻 Lower flame to MEDIUM when adding dry spices so they bloom in oil without burning.",
+            ingIndices: [2, 3, 4, 5],
+            instruction: "In the same kadhai, crackle cumin seeds, sauté ginger-garlic and onions until golden, then add tomatoes and dry spices until soft.",
+            mixing: "Mash tomatoes thoroughly into a thick, clingy masala base.",
+            sensory: "Oil glistens around the thick onion-tomato masala."
+          },
+          {
+            title: "Steam-Finishing Without Water",
+            durationMin: 8,
+            baseTemp: "Low Simmer — Covered (115°C)",
+            heatShift: "🔻 Drop flame to LOW and cover tightly so veggies cook in their own steam.",
+            ingIndices: [0, 1, 6],
+            instruction: "Return roasted aloo and gobi to the masala, sprinkle garam masala and fresh coriander, cover and cook 7 minutes until tender.",
+            mixing: "Fold gently from the bottom once halfway through so florets remain whole and coated in spice.",
+            sensory: "Fork-tender potatoes and crisp-tender spiced cauliflower florets."
+          }
+        ]
+      },
+      {
+        id: "upma",
+        name: "Ghee-Roasted Vegetable Rava Upma",
+        category: "Breakfast & Tiffins",
+        image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 20,
+        rating: 4.7,
+        ratingCount: 210,
+        keywords: ["rava", "sooji", "semolina", "onions", "mustard seeds", "curry leaves", "cashews", "ghee", "ginger", "green chilies"],
+        styles: [
+          {
+            state: "Karnataka Khara Bath (Hotel Style)",
+            spiceLevel: "🌶️🌶️ Rich Ghee, Vangi Bath Spice & Cashews",
+            tagline: "Melt-in-mouth ghee-soaked semolina flavored with vangi bath masala, tomatoes, and roasted cashews.",
+            extraIngredient: { name: "Vangi Bath Spice & Extra Desi Ghee", perPerson: 10, unit: "g", img: ING_IMAGES.gheeOil },
+            plating: "Molded into a warm dome, topped with sev and coriander, served with coconut chutney."
+          },
+          {
+            state: "Tamil / Andhra Classic White Ginger Upma",
+            spiceLevel: "🌶️ Mild, Fluffy & Aromatic",
+            tagline: "Light, fluffy non-sticky semolina tempered with urad dal, chana dal, fresh ginger, and curry leaves.",
+            extraIngredient: { name: "Fresh Lemon Juice & Grated Coconut", perPerson: 8, unit: "g", img: ING_IMAGES.coconut },
+            plating: "Serve piping hot with mango pickle, coconut chutney, or sugar."
+          }
+        ],
+        baseIngredients: [
+          { name: "Bombay Rava / Sooji (Semolina)", perPerson: 65, unit: "g", img: ING_IMAGES.rice },
+          { name: "Finely Chopped Onions & Carrots", perPerson: 45, unit: "g", img: ING_IMAGES.onion },
+          { name: "Cashews, Chana Dal & Urad Dal", perPerson: 12, unit: "g", img: ING_IMAGES.lentils },
+          { name: "Mustard Seeds, Ginger & Green Chilies", perPerson: 8, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Fresh Curry Leaves & Coriander", perPerson: 8, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Pure Desi Ghee & Oil", perPerson: 14, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Dry-Roasting Rava for Zero Lumpiness",
+            durationMin: 4,
+            baseTemp: "Low-Medium Flame (145°C)",
+            heatShift: "🔻 Keep flame LOW-MEDIUM so semolina turns fragrant and sandy without browning.",
+            ingIndices: [0, 5],
+            instruction: "Roast rava with 1 tsp ghee stirring continuously for 4 minutes until aromatic and hot to touch. Transfer to a plate.",
+            mixing: "Stir non-stop from edges to center so every grain roasts evenly.",
+            sensory: "Nutty aroma and grains flow freely like dry sand."
+          },
+          {
+            title: "Tempering & Boiling Measured Water",
+            durationMin: 7,
+            baseTemp: "Medium to High Boil (100°C)",
+            heatShift: "🔺 Raise flame to HIGH once 2.5x water is added so water reaches a rolling boil before adding rava.",
+            ingIndices: [1, 2, 3, 4, 5],
+            instruction: "Heat ghee/oil, pop mustard seeds, fry cashews, chana dal, urad dal, ginger, green chilies, curry leaves, and onions. Pour in 2.5x water and salt; bring to a rolling boil.",
+            mixing: "Stir well to dissolve salt completely.",
+            sensory: "Lively rolling boil filled with aromatic curry leaves and crunchy dals."
+          },
+          {
+            title: "Slow-Pouring Rava & Steaming Fluffy",
+            durationMin: 5,
+            baseTemp: "Ultra-Low Simmer (105°C)",
+            heatShift: "🔻 IMMEDIATELY reduce flame to LOWEST setting while pouring roasted rava in a thin steady stream!",
+            ingIndices: [0, 4, 5],
+            instruction: "Pour roasted rava slowly with one hand while whisking/stirring continuously with the other. Cover and steam on low heat for 2 mins, then finish with a spoon of ghee and coriander.",
+            mixing: "Stir continuously in one direction while pouring rava so zero lumps form.",
+            sensory: "Soft, fluffy, cloud-like texture that leaves the sides of the pan cleanly."
+          }
+        ]
+      },
+      {
+        id: "gongura-pachadi",
+        name: "Andhra Gongura Pachadi (Sorrel Chutney)",
+        category: "Starters & Chutneys",
+        image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 25,
+        rating: 4.9,
+        ratingCount: 264,
+        keywords: ["gongura", "sorrel leaves", "dried red chilies", "garlic", "coriander seeds", "cumin", "fenugreek", "mustard seeds", "sesame oil"],
+        styles: [
+          {
+            state: "Guntur Fiery Red-Chili Style",
+            spiceLevel: "🌶️🌶️🌶️🌶️ Bold Tangy & Garlicky",
+            tagline: "The pride of Andhra! Tangy red-stemmed gongura leaves ground with roasted Guntur chilies, fenugreek, and raw garlic.",
+            extraIngredient: { name: "Extra Guntur Dried Red Chilies & Raw Onions", perPerson: 15, unit: "g", img: ING_IMAGES.chili },
+            plating: "Mix into piping hot steamed white rice with a generous spoon of melted desi ghee and crunchy raw onions."
+          },
+          {
+            state: "Telangana Green Chili & Sesame Style",
+            spiceLevel: "🌶️🌶️🌶️ Nutty Til & Green Chili Punch",
+            tagline: "Blended with roasted white sesame seeds and fiery green chilies for an earthy aroma.",
+            extraIngredient: { name: "Roasted White Sesame Seeds & Green Chilies", perPerson: 12, unit: "g", img: ING_IMAGES.spices },
+            plating: "Serve alongside jowar roti, hot rice, or spicy biryani."
+          }
+        ],
+        baseIngredients: [
+          { name: "Fresh Gongura (Sorrel Leaves, Cleaned)", perPerson: 85, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Dried Red Chilies & Green Chilies", perPerson: 10, unit: "g", img: ING_IMAGES.chili },
+          { name: "Coriander Seeds, Cumin & Fenugreek", perPerson: 6, unit: "g", img: ING_IMAGES.spices },
+          { name: "Peeled Garlic Cloves", perPerson: 10, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Mustard Seeds & Curry Leaves", perPerson: 5, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Sesame / Groundnut Oil", perPerson: 15, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Dry-Roasting Spices & Wilting Gongura Leaves",
+            durationMin: 10,
+            baseTemp: "Low-Medium Flame (150°C)",
+            heatShift: "🔻 Roast spices on LOW flame so fenugreek and coriander turn aromatic without charring.",
+            ingIndices: [0, 1, 2, 5],
+            instruction: "Roast coriander seeds, cumin, fenugreek, and red chilies in 1 tsp oil; set aside to cool. In the same pan, wilt washed and dried gongura leaves until they melt into a thick dark green paste.",
+            mixing: "Stir the wilting leaves continuously for 4 minutes until all leaf moisture evaporates.",
+            sensory: "Leaves reduce to 1/4 volume into a rich, tangy olive-green mash."
+          },
+          {
+            title: "Coarse Grinding & Sizzling Garlic Tempering",
+            durationMin: 6,
+            baseTemp: "Medium Flame Tadka (175°C)",
+            heatShift: "🔺 Pop mustard seeds and fry crushed garlic on MEDIUM until golden.",
+            ingIndices: [3, 4, 5],
+            instruction: "Grind roasted spices with salt and half the garlic into a coarse powder, then pulse briefly with wilted gongura leaves. Temper generously with sesame oil, mustard seeds, crushed garlic, and curry leaves.",
+            mixing: "Fold the sizzling oil tempering thoroughly into the chutney.",
+            sensory: "Mouth-watering tangy-garlicky aroma that instantly triggers appetite!"
+          }
+        ]
+      }
+    ];
+
+    // -------------------- APPLICATION STATE --------------------
+    const state = {
+      selectedDish: null,
+      selectedStyle: null,
+      peopleCount: 4,
+      stoveType: "Gas Stove",
+      currentStepIndex: 0,
+      userRating: 5,
+      selectedTags: [],
+      timerInterval: null,
+      timerSecondsLeft: 300,
+      timerRunning: false,
+      reviewsByDish: JSON.parse(localStorage.getItem("recipe_bro_reviews") || "{}")
+    };
+
+    // -------------------- SPLASH SCREEN SEQUENCE --------------------
+    let splashDismissed = false;
+    function runSplashSequence() {
+      const bar = document.getElementById("splash-progress");
+      let pct = 0;
+      const interval = setInterval(() => {
+        pct += 4;
+        if (bar) bar.style.width = `${Math.min(100, pct)}%`;
+        if (pct >= 100) {
+          clearInterval(interval);
+          setTimeout(dismissSplash, 220);
+        }
+      }, 110);
+    }
+
+    function dismissSplash() {
+      if (splashDismissed) return;
+      splashDismissed = true;
+      const splash = document.getElementById("splash-screen");
+      if (!splash) return;
+      splash.classList.add("splash-exit");
+      setTimeout(() => {
+        splash.style.display = "none";
+      }, 580);
+    }
+
+    // -------------------- NAVIGATION & TOAST HELPERS --------------------
+    function showSection(sectionId) {
+      stopStepTimer();
+      const sections = [
+        "view-home",
+        "view-mode1",
+        "view-mode2",
+        "view-styles",
+        "view-setup",
+        "view-ingredients",
+        "view-cooking",
+        "view-serve"
+      ];
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+      });
+      document.getElementById(sectionId).classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function goHome() {
+      renderTrendingDishes();
+      showSection("view-home");
+    }
+
+    function showToast(msg) {
+      const banner = document.getElementById("toast-banner");
+      document.getElementById("toast-message").textContent = msg;
+      banner.classList.remove("hidden");
+      clearTimeout(banner._timeout);
+      banner._timeout = setTimeout(() => banner.classList.add("hidden"), 3500);
+    }
+
+    // -------------------- HOME COMMUNITY RATINGS SHOWCASE --------------------
+    function getDishLiveRating(dish) {
+      const userRevs = state.reviewsByDish[dish.id] || [];
+      if (userRevs.length === 0) {
+        return { avg: dish.rating.toFixed(1), count: dish.ratingCount };
+      }
+      const sumUser = userRevs.reduce((acc, r) => acc + r.stars, 0);
+      const totalCount = dish.ratingCount + userRevs.length;
+      const weightedAvg = ((dish.rating * dish.ratingCount) + sumUser) / totalCount;
+      return { avg: weightedAvg.toFixed(1), count: totalCount };
+    }
+
+    function renderTrendingDishes() {
+      const grid = document.getElementById("trending-grid");
+      const featured = RECIPES_DB.slice(0, 8);
+      grid.innerHTML = featured.map(dish => {
+        const score = getDishLiveRating(dish);
+        return `
+          <button onclick="selectDishById('${dish.id}')" class="card-hover text-left bg-white rounded-2xl border border-navy/10 overflow-hidden shadow-sm flex flex-col">
+            <div class="relative h-36 w-full bg-creamDark">
+              <img src="${dish.image}" onerror="this.src='${FALLBACK_IMG}'" alt="${dish.name}" class="w-full h-full object-cover" />
+              <span class="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-navy/90 text-turmeric text-xs font-extrabold">
+                ★ ${score.avg} (${score.count})
+              </span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-saffron">${dish.styles.length} State Styles</span>
+                <h4 class="font-display text-lg text-navy leading-snug mt-0.5">${dish.name}</h4>
+              </div>
+              <p class="text-xs text-navy/60 mt-2 font-semibold">Tap to choose state & servings →</p>
+            </div>
+          </button>
+        `;
+      }).join("");
+    }
+
+    // -------------------- MODE 1: SEARCH DISH & CHECKLIST DROPDOWN --------------------
+    function openMode1() {
+      showSection("view-mode1");
+      const input = document.getElementById("dish-search-input");
+      input.value = "";
+      renderDishChecklist("");
+      setTimeout(() => input.focus(), 100);
+    }
+
+    function clearDishSearch() {
+      const input = document.getElementById("dish-search-input");
+      input.value = "";
+      renderDishChecklist("");
+      input.focus();
+    }
+
+    function quickFilterCategory(cat) {
+      const input = document.getElementById("dish-search-input");
+      input.value = "";
+      renderDishChecklist("", cat);
+    }
+
+    function handleDishSearch(query) {
+      const clearBtn = document.getElementById("clear-search-btn");
+      if (query.trim().length > 0) clearBtn.classList.remove("hidden");
+      else clearBtn.classList.add("hidden");
+      renderDishChecklist(query);
+    }
+
+    function renderDishChecklist(query, categoryFilter = "All") {
+      const dropdown = document.getElementById("dish-checklist-dropdown");
+      const q = query.trim().toLowerCase();
+
+      const matches = RECIPES_DB.filter(dish => {
+        const matchCat = categoryFilter === "All" || dish.category === categoryFilter;
+        const matchText = !q ||
+          dish.name.toLowerCase().includes(q) ||
+          dish.category.toLowerCase().includes(q) ||
+          dish.styles.some(s => s.state.toLowerCase().includes(q));
+        return matchCat && matchText;
+      });
+
+      let html = matches.map(dish => {
+        const score = getDishLiveRating(dish);
+        const isChecked = state.selectedDish && state.selectedDish.id === dish.id;
+        return `
+          <div onclick="selectDishById('${dish.id}')" class="p-3.5 sm:p-4 hover:bg-cream cursor-pointer flex items-center justify-between gap-3 transition">
+            <div class="flex items-center gap-3.5">
+              <!-- Checklist Checkbox -->
+              <div class="w-6 h-6 rounded-lg border-2 ${isChecked ? 'bg-saffron border-saffron text-white' : 'border-navy/30 bg-white'} flex items-center justify-center font-bold text-xs shrink-0">
+                ${isChecked ? '✓' : ''}
+              </div>
+              <img src="${dish.image}" onerror="this.src='${FALLBACK_IMG}'" alt="${dish.name}" class="w-12 h-12 rounded-xl object-cover shrink-0 border border-navy/10" />
+              <div>
+                <h4 class="font-display text-lg text-navy leading-tight">${dish.name}</h4>
+                <div class="flex flex-wrap items-center gap-2 mt-0.5">
+                  <span class="text-xs font-bold text-saffron">${dish.styles.map(s => s.state.split(' ')[0]).join(' • ')} Styles</span>
+                  <span class="text-xs text-navy/50">• ★ ${score.avg}</span>
+                </div>
+              </div>
+            </div>
+            <span class="text-xs font-bold bg-creamDark text-navy px-3 py-1.5 rounded-xl shrink-0">Select →</span>
+          </div>
+        `;
+      }).join("");
+
+      // If user typed a custom dish name not in preset list, offer AI Custom Indian Dish Generator!
+      if (q.length >= 2) {
+        html += `
+          <div onclick="generateCustomDishWithAI('${query.replace(/'/g, "\\'")}')" class="p-4 bg-gradient-to-r from-navy to-navyLight text-white cursor-pointer flex items-center justify-between gap-3 hover:opacity-95 transition">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">✨</span>
+              <div>
+                <h4 class="font-display text-base sm:text-lg text-turmeric">Craft Custom Recipe: "${query}"</h4>
+                <p class="text-xs text-white/80">Generate authentic regional state styles & scaled instructions using Recipe Bro AI</p>
+              </div>
+            </div>
+            <span class="px-3 py-1.5 rounded-xl bg-saffron text-white text-xs font-extrabold shrink-0">Create →</span>
+          </div>
+        `;
+      }
+
+      if (!html) {
+        html = `<div class="p-6 text-center text-sm text-navy/60">No matching dishes found. Try typing a dish name above!</div>`;
+      }
+
+      dropdown.innerHTML = html;
+    }
+
+    // -------------------- MODE 2: COOK WITH INGREDIENTS PRESENT AT HOME --------------------
+    const QUICK_PANTRY_ITEMS = [
+      "rice", "onions", "tomatoes", "potatoes", "chicken", "paneer",
+      "toor dal", "mustard seeds", "curry leaves", "turmeric", "ginger garlic paste",
+      "yogurt", "tamarind", "green chilies", "ghee", "cauliflower", "fish"
+    ];
+
+    function openMode2() {
+      showSection("view-mode2");
+      const chipsContainer = document.getElementById("pantry-chips");
+      chipsContainer.innerHTML = QUICK_PANTRY_ITEMS.map(item => `
+        <button onclick="appendPantryChip('${item}')" class="px-3 py-1.5 rounded-full text-xs font-bold bg-creamDark hover:bg-cardamom hover:text-white text-navy transition">
+          + ${item}
+        </button>
+      `).join("");
+    }
+
+    function appendPantryChip(item) {
+      const textarea = document.getElementById("home-ingredients-input");
+      const current = textarea.value.trim();
+      if (!current) {
+        textarea.value = item;
+      } else {
+        const parts = current.split(",").map(s => s.trim().toLowerCase());
+        if (!parts.includes(item.toLowerCase())) {
+          textarea.value = current.replace(/,\s*$/, "") + ", " + item;
+        }
+      }
+    }
+
+    function findDishesFromPantry() {
+      const raw = document.getElementById("home-ingredients-input").value.trim();
+      if (!raw) {
+        showToast("Please type at least 1 or 2 ingredients separated by commas!");
+        return;
+      }
+
+      const userItems = raw.split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+      const resultsContainer = document.getElementById("pantry-results-container");
+      const resultsList = document.getElementById("pantry-results-list");
+      const badge = document.getElementById("pantry-match-badge");
+
+      // Score preset recipes against user's comma-separated ingredients
+      const scored = RECIPES_DB.map(dish => {
+        const matched = dish.keywords.filter(kw =>
+          userItems.some(ui => kw.includes(ui) || ui.includes(kw))
+        );
+        return { dish, matched, score: matched.length };
+      })
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score);
+
+      badge.textContent = `${scored.length} Matching Dishes Found`;
+      resultsContainer.classList.remove("hidden");
+
+      let cardsHtml = scored.slice(0, 6).map(({ dish, matched }) => `
+        <div onclick="selectDishById('${dish.id}')" class="card-hover cursor-pointer bg-cream rounded-2xl border-2 border-navy/10 hover:border-saffron p-4 flex flex-col justify-between">
+          <div class="flex items-start gap-3.5">
+            <img src="${dish.image}" onerror="this.src='${FALLBACK_IMG}'" alt="${dish.name}" class="w-16 h-16 rounded-xl object-cover shrink-0" />
+            <div>
+              <span class="text-[11px] font-extrabold text-cardamom uppercase">Matches ${matched.length} of your items</span>
+              <h4 class="font-display text-lg text-navy leading-tight">${dish.name}</h4>
+              <p class="text-xs text-navy/70 mt-1">
+                <strong>You have:</strong> ${matched.join(", ")}
+              </p>
+            </div>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-navy/10 flex items-center justify-between text-xs font-bold text-saffron">
+            <span>Choose State Style & Cook</span>
+            <span>Let's Cook →</span>
+          </div>
+        </div>
+      `).join("");
+
+      // Always also provide a custom pantry-crafted dish using the exact ingredients entered
+      cardsHtml += `
+        <div onclick="craftCustomPantryDish('${raw.replace(/'/g, "\\'")}')" class="card-hover cursor-pointer bg-navy text-white rounded-2xl border-2 border-saffron p-4 flex flex-col justify-between">
+          <div>
+            <span class="text-[11px] font-extrabold text-turmeric uppercase">✨ Custom Pantry Creation</span>
+            <h4 class="font-display text-lg text-white mt-0.5">Homestyle Spiced ${userItems[0].charAt(0).toUpperCase() + userItems[0].slice(1)} Masala</h4>
+            <p class="text-xs text-white/80 mt-1">
+              Crafted specifically around: <strong>${userItems.join(", ")}</strong>
+            </p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-white/15 flex items-center justify-between text-xs font-bold text-turmeric">
+            <span>Scale 1–1,000 & Follow Flame Steps</span>
+            <span>Let's Cook →</span>
+          </div>
+        </div>
+      `;
+
+      resultsList.innerHTML = cardsHtml;
+      resultsContainer.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // -------------------- CUSTOM RECIPE GENERATOR (FOR ANY DISH OR PANTRY LIST) --------------------
+    function generateCustomDishWithAI(dishTitle) {
+      const cleanName = dishTitle.trim().replace(/\b\w/g, c => c.toUpperCase());
+      const customDish = {
+        id: "custom-" + cleanName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        name: cleanName,
+        category: "Custom Regional Dish",
+        image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 35,
+        rating: 4.9,
+        ratingCount: 42,
+        keywords: [],
+        styles: [
+          {
+            state: "South Indian Spicy Curry-Leaf Style",
+            spiceLevel: "🌶️🌶️🌶️ Aromatic Mustard, Pepper & Curry Leaf",
+            tagline: `Authentic South Indian preparation of ${cleanName} tempered with curry leaves, crushed garlic, and roasted spices.`,
+            extraIngredient: { name: "Fresh Curry Leaves & Crushed Black Pepper", perPerson: 8, unit: "g", img: ING_IMAGES.herbs },
+            plating: `Serve piping hot garnished with crisp curry leaves, fresh coriander, and lemon wedges.`
+          },
+          {
+            state: "North Indian Rich Dhaba Style",
+            spiceLevel: "🌶️🌶️ Creamy Kasuri Methi & Garam Masala",
+            tagline: `Slow-simmered onion-tomato-ginger base finished with desi ghee and aromatic garam masala.`,
+            extraIngredient: { name: "Kasuri Methi & Desi Ghee Touch", perPerson: 10, unit: "g", img: ING_IMAGES.gheeOil },
+            plating: `Finish with a swirl of cream or melted ghee and serve hot with rotis or steamed basmati rice.`
+          }
+        ],
+        baseIngredients: [
+          { name: `Main Base (${cleanName} Core Ingredient)`, perPerson: 130, unit: "g", img: ING_IMAGES.veggies },
+          { name: "Finely Chopped Red Onions", perPerson: 55, unit: "g", img: ING_IMAGES.onion },
+          { name: "Ripe Tomatoes", perPerson: 55, unit: "g", img: ING_IMAGES.tomato },
+          { name: "Fresh Ginger-Garlic Paste", perPerson: 12, unit: "g", img: ING_IMAGES.gingerGarlic },
+          { name: "Turmeric, Red Chili & Garam Masala", perPerson: 8, unit: "g", img: ING_IMAGES.spices },
+          { name: "Fresh Coriander Leaves", perPerson: 10, unit: "g", img: ING_IMAGES.herbs },
+          { name: "Cooking Oil / Desi Ghee", perPerson: 15, unit: "ml", img: ING_IMAGES.gheeOil }
+        ],
+        steps: [
+          {
+            title: "Aromatic Tempering & Onion-Ginger Bhunao",
+            durationMin: 8,
+            baseTemp: "Medium Flame (175°C)",
+            heatShift: "🔺 Heat oil on MEDIUM-HIGH, then 🔻 REDUCE to MEDIUM when adding ginger-garlic paste so it turns golden without sticking.",
+            ingIndices: [1, 3, 6],
+            instruction: `Heat oil/ghee in a heavy pan, sauté finely chopped onions until golden brown, then add ginger-garlic paste and roast for 90 seconds.`,
+            mixing: "Stir continuously in sweeping motions from the bottom so onions brown evenly.",
+            sensory: "Sweet caramelized onion aroma and zero raw garlic sharpness."
+          },
+          {
+            title: "Tomato-Spice Masala Roasting",
+            durationMin: 7,
+            baseTemp: "Low-Medium Flame (145°C)",
+            heatShift: "🔻 Lower flame to LOW before adding turmeric and chili powder so spices bloom in vibrant color without burning.",
+            ingIndices: [2, 4],
+            instruction: `Add chopped tomatoes, salt, turmeric, red chili, and coriander powder. Cook until tomatoes break down into a thick glossy masala.`,
+            mixing: "Mash tomatoes firmly with the back of your ladle until oil separates at the edges.",
+            sensory: "Oil droplets surface cleanly around the masala."
+          },
+          {
+            title: `Simmering ${cleanName} to Full Flavor`,
+            durationMin: 12,
+            baseTemp: "Gentle Simmer — Low Flame (115°C)",
+            heatShift: "🔻 Cover and simmer on LOW heat so flavors penetrate deeply.",
+            ingIndices: [0, 5],
+            instruction: `Add the prepared ${cleanName} main ingredients with a splash of warm water, sprinkle garam masala and regional spices, cover and simmer until tender.`,
+            mixing: "Fold gently every 3 minutes so ingredients remain intact and evenly coated.",
+            sensory: "Rich, unified aroma and tender, well-seasoned bite."
+          }
+        ]
+      };
+
+      state.selectedDish = customDish;
+      renderRegionalStyles();
+      showSection("view-styles");
+    }
+
+    function craftCustomPantryDish(commaIngredients) {
+      const items = commaIngredients.split(",").map(s => s.trim()).filter(Boolean);
+      const title = `Home Pantry ${items.slice(0, 2).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" & ")} Special`;
+      const customDish = {
+        id: "pantry-custom",
+        name: title,
+        category: "Home Kitchen Creation",
+        image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=80",
+        prepTimePer4: 25,
+        rating: 4.9,
+        ratingCount: 88,
+        keywords: items,
+        styles: [
+          {
+            state: "Homestyle South Indian Tempering Style",
+            spiceLevel: "🌶️🌶️ Mustard, Curry Leaf & Turmeric",
+            tagline: "Quick, comforting homestyle preparation highlighting your exact fresh pantry items.",
+            extraIngredient: { name: "Tempering Spices & Fresh Herbs", perPerson: 8, unit: "g", img: ING_IMAGES.herbs },
+            plating: "Serve piping hot right off the stove with steamed rice, chapati, or crisp papad."
+          },
+          {
+            state: "North Indian Spiced Masala Style",
+            spiceLevel: "🌶️🌶️ Cumin, Garam Masala & Ghee",
+            tagline: "Hearty roasted spice preparation finished with warm ghee and garam masala.",
+            extraIngredient: { name: "Garam Masala & Pure Ghee Finish", perPerson: 10, unit: "g", img: ING_IMAGES.gheeOil },
+            plating: "Serve warm with phulkas, paratha, or jeera rice."
+          }
+        ],
+        baseIngredients: items.map((item, idx) => ({
+          name: item.charAt(0).toUpperCase() + item.slice(1),
+          perPerson: idx === 0 ? 120 : 40,
+          unit: "g",
+          img: idx % 3 === 0 ? ING_IMAGES.veggies : idx % 3 === 1 ? ING_IMAGES.spices : ING_IMAGES.herbs
+        })),
+        steps: [
+          {
+            title: "Prepping & Blooming Aromatics from Your Pantry",
+            durationMin: 6,
+            baseTemp: "Medium Flame (170°C)",
+            heatShift: "🔺 Start on MEDIUM to warm oil/ghee, then 🔻 REDUCE to LOW when adding powdered spices.",
+            ingIndices: items.map((_, i) => i).slice(0, 3),
+            instruction: `Prep and chop your pantry ingredients (${items.join(", ")}). Heat oil/ghee and sauté aromatics and spices gently until fragrant.`,
+            mixing: "Stir continuously in circular motions so spices coat every piece without sticking.",
+            sensory: "Warm, appetizing toasted spice aroma."
+          },
+          {
+            title: "Slow-Cooking Main Pantry Ingredients",
+            durationMin: 12,
+            baseTemp: "Low-Medium Simmer (130°C)",
+            heatShift: "🔻 Cover and lower heat so moisture circulates and softens ingredients evenly.",
+            ingIndices: items.map((_, i) => i),
+            instruction: `Add the remaining ingredients (${items.slice(2).join(", ") || items.join(", ")}) with seasoning and a splash of water if needed. Cover and simmer until tender.`,
+            mixing: "Fold gently from bottom to top every 3 minutes.",
+            sensory: "Ingredients are tender, glossy, and well-combined."
+          }
+        ]
+      };
+
+      state.selectedDish = customDish;
+      renderRegionalStyles();
+      showSection("view-styles");
+    }
+
+    // -------------------- STEP 2: REGIONAL STATE STYLES SELECTION --------------------
+    function selectDishById(dishId) {
+      const dish = RECIPES_DB.find(d => d.id === dishId);
+      if (!dish) return;
+      state.selectedDish = dish;
+      renderRegionalStyles();
+      showSection("view-styles");
+    }
+
+    function backFromStyles() {
+      showSection("view-mode1");
+    }
+
+    function renderRegionalStyles() {
+      const dish = state.selectedDish;
+      document.getElementById("style-dish-img").src = dish.image;
+      document.getElementById("style-dish-cat").textContent = dish.category;
+      document.getElementById("style-dish-title").textContent = dish.name;
+
+      const grid = document.getElementById("state-styles-grid");
+      grid.innerHTML = dish.styles.map((st, idx) => `
+        <button onclick="selectRegionalStyle(${idx})" class="card-hover text-left bg-cream hover:bg-white border-2 border-navy/15 hover:border-saffron rounded-2xl p-5 flex flex-col justify-between transition">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="px-3 py-1 rounded-full bg-saffron text-white text-xs font-extrabold uppercase tracking-wider">
+                State Style 0${idx + 1}
+              </span>
+              <span class="text-xs font-bold text-navy/70">${st.spiceLevel}</span>
+            </div>
+            <h3 class="font-display text-2xl text-navy mt-1">${st.state}</h3>
+            <p class="text-sm text-navy/75 mt-2 leading-relaxed">${st.tagline}</p>
+            <div class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-cardamom bg-cardamom/10 px-2.5 py-1 rounded-lg">
+              <span>✨ Signature Touch:</span>
+              <span>${st.extraIngredient.name}</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-navy/10 flex items-center justify-between text-xs font-extrabold text-saffron">
+            <span>Select This Regional Style</span>
+            <span>Next: People & Stove →</span>
+          </div>
+        </button>
+      `).join("");
+    }
+
+    function selectRegionalStyle(styleIndex) {
+      state.selectedStyle = state.selectedDish.styles[styleIndex];
+      document.getElementById("setup-dish-name").textContent = state.selectedDish.name;
+      document.getElementById("setup-style-name").textContent = state.selectedStyle.state;
+      document.getElementById("setup-spice-badge").textContent = state.selectedStyle.spiceLevel;
+      updatePeopleCount(state.peopleCount);
+      showSection("view-setup");
+    }
+
+    // -------------------- STEP 3: PEOPLE QUANTITY (1-1000) & STOVE SELECTION --------------------
+    function updatePeopleCount(val) {
+      let n = parseInt(val, 10);
+      if (isNaN(n) || n < 1) n = 1;
+      if (n > 1000) n = 1000;
+      state.peopleCount = n;
+
+      document.getElementById("people-number-input").value = n;
+      document.getElementById("people-slider").value = n;
+
+      const note = document.getElementById("crowd-advice-note");
+      if (n <= 2) {
+        note.textContent = `👤 Solo / Couple Batch (${n} ${n === 1 ? 'Person' : 'People'}): Use a small 1.5–2L pan so spices don't spread too thin and burn.`;
+      } else if (n <= 10) {
+        note.textContent = `🏠 Family / Small Gathering (${n} People): Standard 3–5 Liter heavy-bottomed kadhai or handi recommended.`;
+      } else if (n <= 50) {
+        note.textContent = `🎉 Party Batch (${n} People): Use a 12–18 Liter wide uruli/bhagona and stir with a long wooden paddle.`;
+      } else if (n <= 250) {
+        note.textContent = `🎪 Catering Batch (${n} People): Use a commercial 40–70 Liter degchi; fry onions/masala in 2 batches for even caramelization.`;
+      } else {
+        note.textContent = `👑 Mega Feast Batch (${n.toLocaleString()} People): Commercial catering degchi (120L+); increase simmer/dum resting time by +15 mins for core heat penetration.`;
+      }
+    }
+
+    function selectStove(stoveName) {
+      state.stoveType = stoveName;
+      document.querySelectorAll(".stove-card").forEach(card => {
+        if (card.dataset.stove === stoveName) {
+          card.classList.remove("border-navy/15", "bg-cream");
+          card.classList.add("border-saffron", "bg-saffron/10");
+        } else {
+          card.classList.remove("border-saffron", "bg-saffron/10");
+          card.classList.add("border-navy/15", "bg-cream");
+        }
+      });
+    }
+
+    // Smart Unit Formatter when scaling 1 to 1,000 people
+    function formatScaledQuantity(perPerson, unit, people) {
+      const total = perPerson * people;
+      if (unit === "g") {
+        if (total >= 1000) return `${(total / 1000).toFixed(2).replace(/\.00$/, '')} kg`;
+        return `${Math.round(total)} g`;
+      }
+      if (unit === "ml") {
+        if (total >= 1000) return `${(total / 1000).toFixed(2).replace(/\.00$/, '')} Liters`;
+        return `${Math.round(total)} ml`;
+      }
+      return `${Math.round(total)} ${unit}`;
+    }
+
+    function getFullScaledIngredients() {
+      const dish = state.selectedDish;
+      const style = state.selectedStyle;
+      const list = [...dish.baseIngredients];
+      if (style && style.extraIngredient) {
+        list.push(style.extraIngredient);
+      }
+      return list.map(item => ({
+        ...item,
+        scaledText: formatScaledQuantity(item.perPerson, item.unit, state.peopleCount)
+      }));
+    }
+
+    // -------------------- STEP 4: DISH SAMPLE IMAGE & SCALED INGREDIENTS VIEW --------------------
+    function proceedToIngredients() {
+      const dish = state.selectedDish;
+      const style = state.selectedStyle;
+      const score = getDishLiveRating(dish);
+
+      document.getElementById("ing-dish-image").src = dish.image;
+      document.getElementById("ing-style-badge").textContent = style.state;
+      document.getElementById("ing-stove-badge").textContent = `🔥 ${state.stoveType}`;
+      document.getElementById("ing-rating-badge").textContent = `★ ${score.avg} (${score.count} ratings)`;
+      document.getElementById("ing-dish-title").textContent = dish.name;
+      document.getElementById("ing-dish-desc").textContent = style.tagline;
+
+      document.getElementById("ing-people-count").textContent = `${state.peopleCount.toLocaleString()} ${state.peopleCount === 1 ? 'Person' : 'People'}`;
+      const scaledMins = Math.round(dish.prepTimePer4 + Math.log10(Math.max(1, state.peopleCount / 4)) * 18);
+      document.getElementById("ing-cook-time").textContent = `~${scaledMins} Mins`;
+
+      const scaledList = getFullScaledIngredients();
+      const grid = document.getElementById("scaled-ingredients-grid");
+      grid.innerHTML = scaledList.map((ing, i) => `
+        <label class="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-cream hover:bg-creamDark/70 border border-navy/10 cursor-pointer transition">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" class="w-5 h-5 accent-saffron rounded cursor-pointer" />
+            <img src="${ing.img}" onerror="this.src='${FALLBACK_IMG}'" alt="${ing.name}" class="w-12 h-12 rounded-xl object-cover border border-navy/15 shrink-0 bg-white" />
+            <span class="font-bold text-sm text-navy leading-snug">${ing.name}</span>
+          </div>
+          <span class="px-3 py-1.5 rounded-xl bg-white border border-saffron/30 font-display text-base text-saffron shrink-0 shadow-xs">
+            ${ing.scaledText}
+          </span>
+        </label>
+      `).join("");
+
+      showSection("view-ingredients");
+    }
+
+    // -------------------- STEP 5: ULTRA-DETAILED STEP-BY-STEP COOKING MODE --------------------
+    function adaptHeatForStove(baseTemp, heatShift, stove) {
+      if (stove === "Gas Stove") {
+        return { temp: `Gas Burner: ${baseTemp}`, shift: heatShift };
+      }
+      if (stove === "Wood-Burning / Firewood Stove") {
+        return {
+          temp: `Firewood Chulha: ${baseTemp} (Active wood logs for high heat; glowing charcoal embers for simmer)`,
+          shift: `${heatShift} • CHULHA TIP: Push burning logs inward to raise heat, or pull logs back & spread glowing ash/embers for gentle low-heat simmer.`
+        };
+      }
+      if (stove === "Electric / Induction Stove") {
+        return {
+          temp: `Electric / Induction: ${baseTemp.replace('High Flame', '1800W–2000W').replace('Medium Flame', '1000W–1200W').replace('Low', '300W–500W')}`,
+          shift: `${heatShift} • ELECTRIC TIP: Electric coils retain residual heat—lift the pan off the burner for 10 seconds when dropping from High to Low so spices never scorch!`
+        };
+      }
+      if (stove === "Air Fryer") {
+        return {
+          temp: `Air Fryer Basket: 180°C – 195°C Convection Hot Air (Use oven-safe pan inside basket for gravies/dum)`,
+          shift: `${heatShift} • AIR FRYER TIP: Preheat 3 mins at 190°C; shake/stir basket every 4 mins and drop to 160°C for simmering/dum.`
+        };
+      }
+      return { temp: baseTemp, shift: heatShift };
+    }
+
+    function startCookingMode() {
+      state.currentStepIndex = 0;
+      document.getElementById("cook-stove-pill").textContent = `🔥 ${state.stoveType}`;
+      document.getElementById("cook-people-pill").textContent = `👥 ${state.peopleCount.toLocaleString()} People`;
+      document.getElementById("cook-header-title").textContent = `${state.selectedDish.name} (${state.selectedStyle.state})`;
+
+      renderCookingStep();
+      showSection("view-cooking");
+    }
+
+    function renderCookingStep() {
+      stopStepTimer();
+      const dish = state.selectedDish;
+      const steps = dish.steps;
+      const idx = state.currentStepIndex;
+      const step = steps[idx];
+      const scaledIngs = getFullScaledIngredients();
+
+      // Update progress bar & counter
+      document.getElementById("step-counter-label").textContent = `Step ${idx + 1} of ${steps.length}`;
+      document.getElementById("step-progress-bar").style.width = `${((idx + 1) / steps.length) * 100}%`;
+
+      // Render step navigation pills
+      const pillsRow = document.getElementById("step-pills-row");
+      pillsRow.innerHTML = steps.map((s, i) => `
+        <button onclick="jumpToStep(${i})" class="px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+          i === idx
+            ? 'bg-navy text-white shadow-sm'
+            : i < idx
+            ? 'bg-cardamom/15 text-cardamom'
+            : 'bg-creamDark text-navy/60 hover:text-navy'
+        }">
+          ${i < idx ? '✓ ' : ''}${i + 1}. ${s.title.split(' ').slice(0, 3).join(' ')}...
+        </button>
+      `).join("");
+
+      // Populate step content
+      document.getElementById("step-title").textContent = `${idx + 1}. ${step.title}`;
+
+      // Timer setup
+      state.timerSecondsLeft = step.durationMin * 60;
+      updateTimerDisplay();
+
+      // Stove-adapted temperature & flame shifts
+      const adapted = adaptHeatForStove(step.baseTemp, step.heatShift, state.stoveType);
+      document.getElementById("step-temp-detail").textContent = adapted.temp;
+      document.getElementById("step-heat-shift").textContent = adapted.shift;
+
+      // Ingredients added in this step
+      const stepIngTags = document.getElementById("step-ingredients-tags");
+      const activeIngs = (step.ingIndices || []).map(i => scaledIngs[i]).filter(Boolean);
+      if (idx === steps.length - 1 && state.selectedStyle.extraIngredient) {
+        const extra = scaledIngs[scaledIngs.length - 1];
+        if (!activeIngs.includes(extra)) activeIngs.push(extra);
+      }
+      stepIngTags.innerHTML = activeIngs.map(ing => `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-cream border border-navy/15 text-xs font-bold text-navy">
+          <span>${ing.name}:</span>
+          <span class="text-saffron font-extrabold">${ing.scaledText}</span>
+        </span>
+      `).join("");
+
+      document.getElementById("step-instruction").textContent = step.instruction;
+      document.getElementById("step-mixing-detail").textContent = step.mixing;
+      document.getElementById("step-sensory-cue").textContent = step.sensory;
+
+      // Prev / Next Button Labels
+      document.getElementById("prev-step-btn").disabled = idx === 0;
+      const nextBtn = document.getElementById("next-step-btn");
+      if (idx === steps.length - 1) {
+        nextBtn.innerHTML = "🍽️ Dish Complete — Let's Serve!";
+        nextBtn.classList.remove("bg-saffron", "hover:bg-saffronDark");
+        nextBtn.classList.add("bg-cardamom", "hover:bg-green-800");
+      } else {
+        nextBtn.innerHTML = "Next Step →";
+        nextBtn.classList.remove("bg-cardamom", "hover:bg-green-800");
+        nextBtn.classList.add("bg-saffron", "hover:bg-saffronDark");
+      }
+    }
+
+    function jumpToStep(i) {
+      state.currentStepIndex = i;
+      renderCookingStep();
+    }
+
+    function changeStep(delta) {
+      const nextIdx = state.currentStepIndex + delta;
+      if (nextIdx < 0) return;
+      if (nextIdx >= state.selectedDish.steps.length) {
+        openServeAndRateScreen();
+        return;
+      }
+      state.currentStepIndex = nextIdx;
+      renderCookingStep();
+    }
+
+    // Built-in Step Timer
+    function updateTimerDisplay() {
+      const mins = Math.floor(state.timerSecondsLeft / 60);
+      const secs = state.timerSecondsLeft % 60;
+      const formatted = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      document.getElementById("step-timer-text").textContent = state.timerRunning
+        ? `Pause Timer (${formatted})`
+        : `Start Timer (${formatted})`;
+    }
+
+    function toggleStepTimer() {
+      if (state.timerRunning) {
+        stopStepTimer();
+        updateTimerDisplay();
+        return;
+      }
+      state.timerRunning = true;
+      updateTimerDisplay();
+      state.timerInterval = setInterval(() => {
+        if (state.timerSecondsLeft > 0) {
+          state.timerSecondsLeft--;
+          updateTimerDisplay();
+        } else {
+          stopStepTimer();
+          showToast("⏰ Step timer finished! Check your sensory cue before moving on.");
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function stopStepTimer() {
+      state.timerRunning = false;
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+    }
+
+    // -------------------- STEP 6: LET'S SERVE & TASTE RATING --------------------
+    function openServeAndRateScreen() {
+      stopStepTimer();
+      document.getElementById("serve-dish-subtitle").textContent =
+        `${state.selectedDish.name} • ${state.selectedStyle.state} • Prepared for ${state.peopleCount.toLocaleString()} ${state.peopleCount === 1 ? 'Person' : 'People'}`;
+      document.getElementById("serve-plating-tips").textContent = state.selectedStyle.plating;
+
+      setUserRating(5);
+      renderDishReviewsFeed();
+      showSection("view-serve");
+    }
+
+    function setUserRating(stars) {
+      state.userRating = stars;
+      const labels = {
+        1: "1.0 / 5 — Needs More Spice",
+        2: "2.0 / 5 — Decent Homestyle",
+        3: "3.0 / 5 — Tasty & Satisfying",
+        4: "4.0 / 5 — Super Delicious!",
+        5: "5.0 / 5 — Restaurant Perfection!"
+      };
+      document.getElementById("rating-label").textContent = labels[stars];
+      const btns = document.querySelectorAll("#rating-stars .star-btn");
+      btns.forEach((btn, i) => {
+        btn.classList.toggle("text-turmeric", i < stars);
+        btn.classList.toggle("text-navy/20", i >= stars);
+      });
+    }
+
+    function toggleTasteTag(btn) {
+      btn.classList.toggle("bg-saffron");
+      btn.classList.toggle("text-white");
+      btn.classList.toggle("bg-white");
+      btn.classList.toggle("text-navy");
+    }
+
+    function submitTasteRating() {
+      const dishId = state.selectedDish.id;
+      const comment = document.getElementById("rating-comment").value.trim();
+      const activeTags = Array.from(document.querySelectorAll("#taste-tags-row .taste-tag.bg-saffron"))
+        .map(b => b.textContent.trim());
+
+      if (!state.reviewsByDish[dishId]) {
+        state.reviewsByDish[dishId] = [];
+      }
+
+      state.reviewsByDish[dishId].unshift({
+        stars: state.userRating,
+        style: state.selectedStyle.state,
+        people: state.peopleCount,
+        stove: state.stoveType,
+        tags: activeTags,
+        comment: comment || `Cooked ${state.selectedStyle.state} for ${state.peopleCount} people on ${state.stoveType}!`,
+        date: "Just now"
+      });
+
+      localStorage.setItem("recipe_bro_reviews", JSON.stringify(state.reviewsByDish));
+      document.getElementById("rating-comment").value = "";
+      showToast("⭐ Thank you! Your taste rating is now live for other Recipe Bro chefs.");
+      renderDishReviewsFeed();
+    }
+
+    function renderDishReviewsFeed() {
+      const dish = state.selectedDish;
+      const score = getDishLiveRating(dish);
+      const userRevs = state.reviewsByDish[dish.id] || [];
+      const feed = document.getElementById("dish-reviews-feed");
+
+      const sampleRevs = [
+        {
+          stars: 5,
+          style: dish.styles[0].state,
+          people: 6,
+          stove: "Gas Stove",
+          tags: ["🔥 Authentic Spice", "👌 Spot-On Heat Guide"],
+          comment: "Lowering the flame right when instructed kept the masala from burning. Amazing flavor!",
+          date: "2 days ago"
+        }
+      ];
+
+      const allRevs = [...userRevs, ...sampleRevs].slice(0, 4);
+      feed.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold uppercase tracking-wider text-navy/60">Live Community Taste Reviews</span>
+          <span class="text-xs font-extrabold text-saffron">Overall: ★ ${score.avg} (${score.count} ratings)</span>
+        </div>
+        ${allRevs.map(r => `
+          <div class="bg-white rounded-2xl p-3.5 border border-navy/10 text-xs space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-turmeric">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)} <span class="text-navy ml-1">${r.style}</span></span>
+              <span class="text-navy/45">${r.date}</span>
+            </div>
+            <p class="text-navy/80">${r.comment}</p>
+            <div class="text-[11px] text-navy/50 font-semibold">Cooked for ${r.people} people • ${r.stove}</div>
+          </div>
+        `).join("")}
+      `;
+    }
+
+    // -------------------- INITIALIZE APP ON WINDOW LOAD --------------------
+    let deferredInstallPrompt = null;
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+
+    function setupCrossPlatformPWA() {
+      // Generate crisp Recipe Bro SVG App Icon data URI for Android & iPhone Home Screen
+      const appIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#FDF8EE"/><circle cx="256" cy="256" r="210" fill="none" stroke="#1B2432" stroke-width="18"/><circle cx="256" cy="256" r="184" fill="none" stroke="#F26419" stroke-width="14"/><text x="256" y="245" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="108" fill="#1B2432">RECIPE</text><text x="256" y="348" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="108" fill="#F26419">BRO</text></svg>`;
+      const iconUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(appIconSvg);
+
+      const appleIcon = document.getElementById("apple-touch-icon");
+      if (appleIcon) appleIcon.href = iconUrl;
+
+      // Dynamic Web App Manifest for Android & Desktop Chrome Installation
+      const manifestObj = {
+        name: "Recipe Bro — Indian Culinary Companion",
+        short_name: "Recipe Bro",
+        description: "Authentic Indian recipes scaled for 1 to 1,000 people across Gas, Firewood, Electric & Air Fryer.",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#FDF8EE",
+        theme_color: "#1B2432",
+        orientation: "portrait-primary",
+        icons: [
+          { src: iconUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+          { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+        ]
+      };
+      const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: "application/manifest+json" });
+      const manifestLink = document.getElementById("dynamic-manifest");
+      if (manifestLink) manifestLink.href = URL.createObjectURL(manifestBlob);
+
+      // Register Inline Service Worker for Offline Kitchen Caching when served over HTTPS/localhost
+      if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+        const swCode = `
+          const CACHE_NAME = 'recipe-bro-v1';
+          self.addEventListener('install', (e) => self.skipWaiting());
+          self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+          });
+        `;
+        const swBlob = new Blob([swCode], { type: "application/javascript" });
+        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
+      }
+    }
+
+    function openInstallModal() {
+      document.getElementById("install-modal").classList.remove("hidden");
+    }
+
+    function closeInstallModal() {
+      document.getElementById("install-modal").classList.add("hidden");
+    }
+
+    function switchPlatformTab(platform) {
+      ["android", "ios", "web"].forEach(p => {
+        const tab = document.getElementById(`tab-${p}`);
+        const panel = document.getElementById(`panel-${p}`);
+        if (p === platform) {
+          tab.classList.add("bg-navy", "text-white");
+          tab.classList.remove("text-navy");
+          panel.classList.remove("hidden");
+        } else {
+          tab.classList.remove("bg-navy", "text-white");
+          tab.classList.add("text-navy");
+          panel.classList.add("hidden");
+        }
+      });
+    }
+
+    async function triggerNativeInstall() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice;
+        if (choice.outcome === "accepted") {
+          showToast("🎉 Recipe Bro installed to your device home screen!");
+          closeInstallModal();
+        }
+        deferredInstallPrompt = null;
+      } else {
+        showToast("📲 Tap your browser's menu (⋮) and select 'Add to Home Screen' / 'Install App'!");
+      }
+    }
+
+    function downloadStandaloneBundle() {
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "recipe-bro-app.html";
+      a.click();
+      showToast("📦 Downloaded recipe-bro-app.html — ready to deploy to Web, Android, or iOS!");
+    }
+
+    window.onload = function () {
+      setupCrossPlatformPWA();
+      runSplashSequence();
+      renderTrendingDishes();
+    };
+  </script>
+</body>
+</html>
